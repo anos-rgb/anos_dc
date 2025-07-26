@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-07-26T15:18:57.787Z",
-  "backupCount": 6,
-  "totalFiles": 12,
+  "timestamp": "2025-07-26T15:19:38.449Z",
+  "backupCount": 1,
+  "totalFiles": 24,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v21.7.3",
-    "uptime": 615.22498772,
+    "uptime": 32.926864408,
     "memoryUsage": {
-      "rss": 98308096,
-      "heapTotal": 34377728,
-      "heapUsed": 32583016,
-      "external": 5595594,
-      "arrayBuffers": 2072951
+      "rss": 93392896,
+      "heapTotal": 30150656,
+      "heapUsed": 27473992,
+      "external": 4343347,
+      "arrayBuffers": 820744
     }
   },
   "files": [
@@ -74,6 +74,66 @@
       "path": "data/warnings.json",
       "size": 233,
       "modified": "2025-07-05T17:04:42.000Z"
+    },
+    {
+      "path": "events/dailyUpdate.js",
+      "size": 4288,
+      "modified": "2025-06-11T20:07:56.000Z"
+    },
+    {
+      "path": "events/guildMemberAdd.js",
+      "size": 7784,
+      "modified": "2025-07-26T11:55:24.480Z"
+    },
+    {
+      "path": "events/guildMemberRemove.js",
+      "size": 2968,
+      "modified": "2025-06-26T07:57:40.000Z"
+    },
+    {
+      "path": "events/interactionCreate.js",
+      "size": 21301,
+      "modified": "2025-07-26T15:18:56.705Z"
+    },
+    {
+      "path": "events/memberStatsUpdate.js",
+      "size": 2268,
+      "modified": "2025-07-19T18:16:22.000Z"
+    },
+    {
+      "path": "events/messageCreate.js",
+      "size": 10633,
+      "modified": "2025-05-30T16:44:18.000Z"
+    },
+    {
+      "path": "events/messageDelete.js",
+      "size": 1155,
+      "modified": "2025-06-26T06:15:50.000Z"
+    },
+    {
+      "path": "events/messageReactionAdd.js",
+      "size": 1061,
+      "modified": "2025-06-26T06:15:16.000Z"
+    },
+    {
+      "path": "events/messageReactionRemove.js",
+      "size": 1066,
+      "modified": "2025-06-26T06:15:36.000Z"
+    },
+    {
+      "path": "events/ready.js",
+      "size": 4476,
+      "modified": "2025-07-19T18:13:40.000Z"
+    },
+    {
+      "path": "events/voiceMessageHandler.js",
+      "size": 4287,
+      "modified": "2025-07-26T11:42:41.815Z"
+    },
+    {
+      "path": "events/voiceStateUpdate.js",
+      "size": 3067,
+      "modified": "2025-07-11T23:15:02.000Z"
     }
   ]
 }
