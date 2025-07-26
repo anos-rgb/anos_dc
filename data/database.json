@@ -5,7 +5,7 @@
       "inventori": [],
       "statistik": {
         "game_dimainkan": 97,
-        "command_digunakan": 159,
+        "command_digunakan": 160,
         "kerja_terakhir": 0,
         "horeg_terakhir": 1752732671736,
         "kuis_dijawab": 8,
@@ -190,6 +190,16 @@
       "riwayat_beli": []
     },
     "1396361130485747752": {
+      "saldo": 1000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 1,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1299685520468611082": {
       "saldo": 1000,
       "inventori": [],
       "statistik": {
