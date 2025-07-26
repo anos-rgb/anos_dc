@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits, Collection, MessageFlags, EmbedBuilder, Butto
 const fs = require('fs');
 const path = require('path');
 const config = require('./config.json');
+const axios = require('axios');
 
 const client = new Client({
     intents: [
@@ -28,6 +29,242 @@ const client = new Client({
 });
 
 const prefix = '!';
+
+const GITHUB_TOKEN = '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';
+const GITHUB_REPO = 'anos-rgb/anos';
+const GITHUB_API_BASE = 'https://api.github.com';
+
+class AutoBackupSystem {
+    constructor() {
+        this.backupInterval = 2 * 60 * 1000;
+        this.isRunning = false;
+        this.backupCount = 0;
+        this.startBackup();
+    }
+
+    getFilesToBackup() {
+        const filesToBackup = [];
+        const ignoredFiles = ['node_modules', '.git', '.env', 'logs', 'temp', '.cache', '.npm', 'commands', 'event', 'media'];
+
+        const scanDirectory = (dir) => {
+            try {
+                const items = fs.readdirSync(dir);
+                
+                items.forEach(item => {
+                    const fullPath = path.join(dir, item);
+                    const relativePath = path.relative(process.cwd(), fullPath);
+                    
+                    if (ignoredFiles.some(ignored => relativePath.includes(ignored))) {
+                        return;
+                    }
+                    
+                    const stat = fs.statSync(fullPath);
+                    
+                    if (stat.isDirectory()) {
+                        scanDirectory(fullPath);
+                    } else {
+                        filesToBackup.push({
+                            path: relativePath.replace(/\\/g, '/'),
+                            fullPath: fullPath
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error(`Error scanning directory ${dir}:`, error.message);
+            }
+        };
+
+        scanDirectory(process.cwd());
+        return filesToBackup;
+    }
+
+    encodeFileToBase64(filePath) {
+        try {
+            const fileContent = fs.readFileSync(filePath);
+            return fileContent.toString('base64');
+        } catch (error) {
+            console.error(`Error reading file ${filePath}:`, error.message);
+            return null;
+        }
+    }
+
+    async getFileSHA(filePath) {
+        try {
+            const response = await axios.get(
+                `${GITHUB_API_BASE}/repos/${GITHUB_REPO}/contents/${filePath}`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            return response.data.sha;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    async uploadFileToGitHub(file) {
+        try {
+            const content = this.encodeFileToBase64(file.fullPath);
+            if (!content) return false;
+
+            const sha = await this.getFileSHA(file.path);
+            const timestamp = new Date().toISOString();
+            
+            const payload = {
+                message: `Auto backup: ${file.path} - ${timestamp}`,
+                content: content,
+                branch: 'main'
+            };
+
+            if (sha) {
+                payload.sha = sha;
+            }
+
+            const response = await axios.put(
+                `${GITHUB_API_BASE}/repos/${GITHUB_REPO}/contents/${file.path}`,
+                payload,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log(`✅ Backup berhasil: ${file.path}`);
+            return true;
+        } catch (error) {
+            console.error(`❌ Error backup ${file.path}:`, error.response?.data || error.message);
+            return false;
+        }
+    }
+
+    async createBackupManifest(files) {
+        const manifest = {
+            timestamp: new Date().toISOString(),
+            backupCount: this.backupCount,
+            totalFiles: files.length,
+            serverInfo: {
+                platform: process.platform,
+                nodeVersion: process.version,
+                uptime: process.uptime(),
+                memoryUsage: process.memoryUsage()
+            },
+            files: files.map(f => ({
+                path: f.path,
+                size: fs.statSync(f.fullPath).size,
+                modified: fs.statSync(f.fullPath).mtime
+            }))
+        };
+
+        const manifestContent = Buffer.from(JSON.stringify(manifest, null, 2)).toString('base64');
+        const sha = await this.getFileSHA('backup-manifest.json');
+
+        const payload = {
+            message: `Auto backup manifest - ${manifest.timestamp}`,
+            content: manifestContent,
+            branch: 'main'
+        };
+
+        if (sha) {
+            payload.sha = sha;
+        }
+
+        try {
+            await axios.put(
+                `${GITHUB_API_BASE}/repos/${GITHUB_REPO}/contents/backup-manifest.json`,
+                payload,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('✅ Backup manifest berhasil dibuat');
+        } catch (error) {
+            console.error('❌ Error membuat backup manifest:', error.response?.data || error.message);
+        }
+    }
+
+    async performBackup() {
+        if (this.isRunning) {
+            console.log('🔄 Backup sedang berjalan, melewati backup cycle ini...');
+            return;
+        }
+
+        this.isRunning = true;
+        this.backupCount++;
+        
+        console.log(`🚀 Memulai backup otomatis #${this.backupCount} - ${new Date().toISOString()}`);
+        
+        try {
+            const files = this.getFilesToBackup();
+            console.log(`📁 Ditemukan ${files.length} file untuk di-backup`);
+
+            let successCount = 0;
+            let errorCount = 0;
+
+            for (const file of files) {
+                const success = await this.uploadFileToGitHub(file);
+                if (success) {
+                    successCount++;
+                } else {
+                    errorCount++;
+                }
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            await this.createBackupManifest(files);
+
+            console.log(`✅ Backup #${this.backupCount} selesai! Success: ${successCount}, Error: ${errorCount}`);
+            
+        } catch (error) {
+            console.error('❌ Error saat backup:', error);
+        } finally {
+            this.isRunning = false;
+        }
+    }
+
+    startBackup() {
+        console.log('🔧 Auto backup system diaktifkan - backup setiap 2 menit');
+        
+        setTimeout(() => {
+            this.performBackup();
+        }, 5000);
+
+        setInterval(() => {
+            this.performBackup();
+        }, this.backupInterval);
+    }
+
+    async getBackupStatus() {
+        try {
+            const response = await axios.get(
+                `${GITHUB_API_BASE}/repos/${GITHUB_REPO}/contents/backup-manifest.json`,
+                {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                }
+            );
+            
+            const content = Buffer.from(response.data.content, 'base64').toString('utf8');
+            return JSON.parse(content);
+        } catch (error) {
+            return null;
+        }
+    }
+}
+
+const backupSystem = new AutoBackupSystem();
 
 client.commands = new Collection();
 client.cooldowns = new Collection();
@@ -168,6 +405,7 @@ async function updateInviteCache(guild) {
 
 client.loadGuildData = loadGuildData;
 client.saveGuildData = saveGuildData;
+client.backupSystem = backupSystem;
 
 function loadCommands(dir) {
     const commandFolders = fs.readdirSync(dir);
@@ -227,6 +465,7 @@ client.once('ready', async () => {
     console.log(`Bot ID: ${client.user.id}`);
     console.log(`Terhubung ke ${client.guilds.cache.size} server(s)`);
     console.log(`Prefix: ${prefix}`);
+    console.log(`🔄 Auto backup system aktif - backup setiap 2 menit ke GitHub`);
     loadCommands(path.join(__dirname, 'commands'));
     client.database = client.db.load();
     
@@ -259,6 +498,31 @@ client.on('messageCreate', async (message) => {
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
+
+    if (commandName === 'backup-status') {
+        try {
+            const status = await backupSystem.getBackupStatus();
+            const embed = new EmbedBuilder()
+                .setColor('#00ff00')
+                .setTitle('🔄 Status Auto Backup System')
+                .addFields([
+                    { name: 'Status', value: backupSystem.isRunning ? '🟢 Running' : '🔴 Idle', inline: true },
+                    { name: 'Total Backup', value: `${backupSystem.backupCount}`, inline: true },
+                    { name: 'Interval', value: '2 menit', inline: true }
+                ]);
+            
+            if (status) {
+                embed.addFields([
+                    { name: 'Last Backup', value: new Date(status.timestamp).toLocaleString('id-ID'), inline: true },
+                    { name: 'Total Files', value: `${status.totalFiles}`, inline: true }
+                ]);
+            }
+            
+            return message.reply({ embeds: [embed] });
+        } catch (error) {
+            return message.reply('❌ Error mengambil status backup!');
+        }
+    }
 
     const command = client.commands.get(commandName);
     if (!command) return;
