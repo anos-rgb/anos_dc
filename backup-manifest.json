@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-07-26T13:35:09.981Z",
+  "timestamp": "2025-07-26T13:38:33.874Z",
   "backupCount": 1,
-  "totalFiles": 16,
+  "totalFiles": 11,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v21.7.3",
-    "uptime": 29.871095697,
+    "uptime": 18.498064288,
     "memoryUsage": {
-      "rss": 2185773056,
-      "heapTotal": 552603648,
-      "heapUsed": 550170424,
-      "external": 1051270382,
-      "arrayBuffers": 523837260
+      "rss": 88662016,
+      "heapTotal": 28053504,
+      "heapUsed": 26210928,
+      "external": 3873914,
+      "arrayBuffers": 351311
     }
   },
   "files": [
@@ -27,8 +27,8 @@
     },
     {
       "path": "data/1246508676181921872.json",
-      "size": 866,
-      "modified": "2025-07-26T13:29:17.448Z"
+      "size": 701,
+      "modified": "2025-07-26T13:35:43.167Z"
     },
     {
       "path": "data/1261408115182538822.json",
@@ -69,31 +69,6 @@
       "path": "data/warnings.json",
       "size": 233,
       "modified": "2025-07-05T17:04:42.000Z"
-    },
-    {
-      "path": "gabubot.tar.gz",
-      "size": 392369097,
-      "modified": "2025-07-26T12:06:21.920Z"
-    },
-    {
-      "path": "index.js",
-      "size": 31445,
-      "modified": "2025-07-26T13:34:22.676Z"
-    },
-    {
-      "path": "package-lock.json",
-      "size": 120486,
-      "modified": "2025-07-26T13:34:38.851Z"
-    },
-    {
-      "path": "package.json",
-      "size": 1362,
-      "modified": "2025-07-26T13:28:02.801Z"
-    },
-    {
-      "path": "utils/databaseInit.js",
-      "size": 538,
-      "modified": "2025-07-11T23:18:28.000Z"
     }
   ]
 }
