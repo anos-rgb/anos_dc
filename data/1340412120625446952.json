@@ -1,0 +1,92 @@
+{
+  "welcomeChannel": "1387374079975096431",
+  "goodbyeChannel": "1387374079975096431",
+  "registerChannel": null,
+  "registerRole": null,
+  "antiLink": true,
+  "allowedLinks": [],
+  "gameRoles": [
+    {
+      "id": "1387458765259018290",
+      "name": "MINECRAFT"
+    },
+    {
+      "id": "1389897442173911092",
+      "name": "ROBLOX"
+    },
+    {
+      "id": "1389897490656133140",
+      "name": "FREE FIRE"
+    },
+    {
+      "id": "1389897675343790174",
+      "name": "GENSHIN"
+    },
+    {
+      "id": "1389897629906894848",
+      "name": "VALORANT"
+    },
+    {
+      "id": "1389897586097258607",
+      "name": "MOBILE LEGENDS"
+    },
+    {
+      "id": "1389897723611840534",
+      "name": "SUPER SUS"
+    },
+    {
+      "id": "1389897537430753322",
+      "name": "PUBG"
+    }
+  ],
+  "gameRoleChannel": "1390019934666489988",
+  "randomRoles": [
+    "1387456685391609936",
+    "1387457112057319605"
+  ],
+  "randomRoleMenus": [
+    {
+      "id": "random_1751477301622",
+      "text": "KAMU SERING AKTIF KAPAN",
+      "roles": [
+        {
+          "id": "1387456685391609936",
+          "name": "☀️AKTIF SIANG",
+          "color": 15844367
+        },
+        {
+          "id": "1387457112057319605",
+          "name": "🌙AKTIF MALAM",
+          "color": 3021019
+        }
+      ],
+      "createdAt": "2025-07-02T17:28:21.622Z"
+    }
+  ],
+  "adminRole": null,
+  "nameRequests": {},
+  "deleteLogChannel": "1387374168592355501",
+  "reactRoles": {
+    "1387464289274822656": {
+      "roleId": "1387374035888767077",
+      "emoji": "✅"
+    }
+  },
+  "welcomeMessage": "━━━━━━━━━━━━━━━\nSelamat datang {nickname} di **{server}**\nKamu member ke-{membercount}\nJangan lupa baca rules ya {@}\n━━━━━━━━━━━━━━━",
+  "goodbyeMessage": "━━━━━━━━━━━━━━━\n{nickname} cabut dari **{server}**\nSekarang sisa {membercount} member\nSemoga sukses terus \n━━━━━━━━━━━━━━━",
+  "goodbyech": null,
+  "welcomech": null,
+  "autoRoles": [
+    {
+      "roleId": "1387374035888767077",
+      "delay": "5 menit",
+      "delayMs": 300000
+    }
+  ],
+  "createVoice": {
+    "categoryId": "1397434842248908830",
+    "textChannelId": "1397434843834351617",
+    "voiceChannelId": "1397434845550084097",
+    "userChannels": {}
+  }
+}

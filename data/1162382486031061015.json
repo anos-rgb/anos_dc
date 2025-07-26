@@ -1,0 +1,45 @@
+{
+  "welcomeChannel": "1398341057946714142",
+  "welcomech": null,
+  "goodbyeChannel": "1398341057946714142",
+  "goodbyech": null,
+  "registerChannel": null,
+  "registerRole": null,
+  "antiLink": false,
+  "allowedLinks": [],
+  "gameRoles": [
+    {
+      "id": "1398356785370365992",
+      "name": "MINECRAFT"
+    },
+    {
+      "id": "1398356946821841060",
+      "name": "ROBLOX"
+    },
+    {
+      "id": "1398357999386366133",
+      "name": "DRAGON NEST"
+    }
+  ],
+  "gameRoleChannel": "1398341059842539635",
+  "randomRoles": [],
+  "randomRoleMenus": [],
+  "adminRole": null,
+  "nameRequests": {},
+  "deleteLogChannel": null,
+  "reactRoles": {
+    "1389468444474478724": {
+      "roleId": "1162625955496480858",
+      "emoji": "✅"
+    }
+  },
+  "welcomeMessage": null,
+  "goodbyeMessage": null,
+  "autoRoles": [
+    {
+      "roleId": "1398355788602413160",
+      "delay": "5 detik",
+      "delayMs": 5000
+    }
+  ]
+}

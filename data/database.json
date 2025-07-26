@@ -1,0 +1,249 @@
+{
+  "users": {
+    "1246506845942579311": {
+      "saldo": 77342650177317860,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 97,
+        "command_digunakan": 159,
+        "kerja_terakhir": 0,
+        "horeg_terakhir": 1752732671736,
+        "kuis_dijawab": 8,
+        "kuis_salah": 2,
+        "kuis_benar": 6
+      },
+      "riwayat_beli": [],
+      "kuis_streak": 6
+    },
+    "1362771730854056039": {
+      "saldo": 1298791,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 56,
+        "command_digunakan": 85,
+        "kerja_terakhir": 1750222588361,
+        "streaming_terakhir": 1752922735763,
+        "kuis_dijawab": 19,
+        "kuis_benar": 12,
+        "nguli_terakhir": 1750320484589,
+        "nguli_streak": 4,
+        "kuis_salah": 7,
+        "kuis_timeout": 1
+      },
+      "riwayat_beli": [],
+      "kuis_streak": 2
+    },
+    "766095525895208980": {
+      "saldo": 1497272,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 10,
+        "command_digunakan": 17,
+        "kerja_terakhir": 0,
+        "nguli_terakhir": 1749299645635,
+        "nguli_streak": 1
+      },
+      "riwayat_beli": []
+    },
+    "1237430275739226174": {
+      "saldo": 1520301,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 7,
+        "command_digunakan": 45,
+        "kerja_terakhir": 1752905690044,
+        "tiktok_terakhir": 1752905632049,
+        "tiktok_followers": 114,
+        "youtube_terakhir": 1750235152076,
+        "youtube_subscriber": 47,
+        "streaming_terakhir": 1750235136948,
+        "nguli_terakhir": 1752905627152,
+        "nguli_streak": 4,
+        "twitch_terakhir": 1750235146115,
+        "twitch_subscribers": 56,
+        "horeg_terakhir": 1752905620240,
+        "instagram_terakhir": 1752905643642,
+        "instagram_followers": 96,
+        "tod_terakhir": 1750164277587
+      },
+      "riwayat_beli": []
+    },
+    "1326523423249272874": {
+      "saldo": 1003905,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 1,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1334882638317621250": {
+      "saldo": 1004493,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 3,
+        "kerja_terakhir": 1749349231168,
+        "nguli_terakhir": 1749349247033,
+        "nguli_streak": 1
+      },
+      "riwayat_beli": []
+    },
+    "761025724789948427": {
+      "saldo": 35892,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 2,
+        "command_digunakan": 4,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1352488571658829904": {
+      "saldo": 1002750,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 6,
+        "command_digunakan": 8,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1321008058322653237": {
+      "saldo": 1002807,
+      "bank": 0,
+      "statistik": {
+        "command_digunakan": 4,
+        "kerja_terakhir": 0,
+        "rampok_terakhir": 0,
+        "daily_terakhir": 0,
+        "youtube_terakhir": 1750194548197,
+        "youtube_subscriber": 32
+      }
+    },
+    "1343596142658584587": {
+      "saldo": 1058,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 29,
+        "command_digunakan": 97,
+        "kerja_terakhir": 1750307019556,
+        "streaming_terakhir": 1750234919508,
+        "nguli_terakhir": 1750235622139,
+        "nguli_streak": 1,
+        "youtube_terakhir": 1752731589487,
+        "youtube_subscriber": 59,
+        "twitch_terakhir": 1752731632366,
+        "twitch_subscribers": 4
+      },
+      "riwayat_beli": []
+    },
+    "1316794062967148584": {
+      "saldo": 2000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 2,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "493337870283833354": {
+      "saldo": 2000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 2,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1063025810262470716": {
+      "saldo": 2000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 1,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1139955449911857232": {
+      "saldo": 2000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 1,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1394967949369933962": {
+      "saldo": 2000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 1,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    },
+    "1396361130485747752": {
+      "saldo": 1000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 1,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
+    }
+  },
+  "item_toko": [
+    {
+      "id": "admin_magang",
+      "nama": "Role Admin Magang",
+      "harga": 1000000000,
+      "deskripsi": "Role admin magang bergengsi yang cuma beberapa orang punya!",
+      "stok": 3
+    },
+    {
+      "id": "role_vip",
+      "nama": "Role VIP",
+      "harga": 50000000,
+      "deskripsi": "Role VIP buat flexing ke temen-temen!",
+      "stok": -1
+    },
+    {
+      "id": "warna_merah",
+      "nama": "Role Warna Merah",
+      "harga": 25000000,
+      "deskripsi": "Biar username lo keliatan kece dengan warna merah!",
+      "stok": -1
+    },
+    {
+      "id": "fishing_rod",
+      "nama": "Fishing Rod++",
+      "harga": 15000000,
+      "deskripsi": "Pancing kece buat naikin persentase dapet ikan langka!",
+      "stok": 10
+    }
+  ],
+  "statistik_game": {
+    "penghasilan_harian": 56504,
+    "total_transaksi": 0,
+    "tod_dimainkan": 2,
+    "total_kemenangan": 13,
+    "koin_beredar": null
+  },
+  "pajak": 50,
+  "curses": {
+    "1362771730854056039": {
+      "start_time": 1750142339358,
+      "end_time": 1750153139358,
+      "last_drain": 1750142339358,
+      "caster": "1246506845942579311"
+    }
+  }
+}

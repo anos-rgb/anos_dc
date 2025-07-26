@@ -1,0 +1,28 @@
+{
+  "welcomeChannel": "1348736324353392681",
+  "goodbyeChannel": "1348736324353392681",
+  "registerChannel": "1336337929311752224",
+  "registerRole": "1336070451910414378",
+  "antiLink": false,
+  "allowedLinks": [],
+  "gameRoles": [],
+  "gameRoleChannel": null,
+  "randomRoles": [],
+  "randomRoleMenus": [],
+  "adminRole": null,
+  "nameRequests": {},
+  "welcomeMessage": "SELAMAT DATANG {nickname}",
+  "autoRoles": [
+    {
+      "roleId": "1336070451910414378",
+      "delay": "10 menit",
+      "delayMs": 600000
+    }
+  ],
+  "createVoice": {
+    "categoryId": "1398597970185949276",
+    "textChannelId": "1398597972442353754",
+    "voiceChannelId": "1398597974229127229",
+    "userChannels": {}
+  }
+}
