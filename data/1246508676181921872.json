@@ -5,7 +5,12 @@
   "registerRole": "1336070451910414378",
   "antiLink": false,
   "allowedLinks": [],
-  "gameRoles": [],
+  "gameRoles": [
+    {
+      "id": "1399072554341110034",
+      "name": "ZZZ"
+    }
+  ],
   "gameRoleChannel": "1351610336213733480",
   "randomRoles": [],
   "randomRoleMenus": [],
