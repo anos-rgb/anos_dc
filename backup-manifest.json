@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-07-27T07:27:23.195Z",
-  "backupCount": 2,
+  "timestamp": "2025-07-27T07:29:52.080Z",
+  "backupCount": 1,
   "totalFiles": 24,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v21.7.3",
-    "uptime": 148.633834475,
+    "uptime": 32.772648195,
     "memoryUsage": {
-      "rss": 93020160,
-      "heapTotal": 32247808,
-      "heapUsed": 29215232,
-      "external": 5222290,
-      "arrayBuffers": 1699647
+      "rss": 91041792,
+      "heapTotal": 29626368,
+      "heapUsed": 27727824,
+      "external": 4340760,
+      "arrayBuffers": 818157
     }
   },
   "files": [
@@ -92,8 +92,8 @@
     },
     {
       "path": "events/interactionCreate.js",
-      "size": 8064,
-      "modified": "2025-07-27T07:24:46.161Z"
+      "size": 4717,
+      "modified": "2025-07-27T07:29:11.135Z"
     },
     {
       "path": "events/memberStatsUpdate.js",
