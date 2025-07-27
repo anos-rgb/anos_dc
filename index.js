@@ -44,8 +44,7 @@ class AutoBackupSystem {
 
     getFilesToBackup() {
         const filesToBackup = [];
-        const ignoredFiles = ['node_modules', '.git', '.env', 'logs', 'temp', '.cache', '.npm', 'commands', 'event', 'media'];
-
+        const ignoredFiles = ['node_modules', '.git', '.env', 'logs', 'temp', '.cache', '.npm', 'commands', 'event', 'media', 'utils', 'config.json', 'index.js', 'package-lock.json', 'package.json'];
         const scanDirectory = (dir) => {
             try {
                 const items = fs.readdirSync(dir);
