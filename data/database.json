@@ -208,6 +208,16 @@
         "kerja_terakhir": 0
       },
       "riwayat_beli": []
+    },
+    "1296401169450799197": {
+      "saldo": 1000,
+      "inventori": [],
+      "statistik": {
+        "game_dimainkan": 0,
+        "command_digunakan": 2,
+        "kerja_terakhir": 0
+      },
+      "riwayat_beli": []
     }
   },
   "item_toko": [
