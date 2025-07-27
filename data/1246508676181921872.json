@@ -24,5 +24,6 @@
     "textChannelId": "1398597972442353754",
     "voiceChannelId": "1398597974229127229",
     "userChannels": {}
-  }
+  },
+  "privateVC": {}
 }
