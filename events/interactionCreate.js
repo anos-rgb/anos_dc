@@ -1,154 +1,189 @@
 const fs = require('fs');
 const path = require('path');
-const { MessageFlags } = require('discord.js');
+const {
+  PermissionFlagsBits,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+  ActionRowBuilder,
+  ButtonStyle,
+  MessageFlags
+} = require('discord.js');
 
 module.exports = {
   name: 'interactionCreate',
   once: false,
   async execute(interaction, client) {
-    const safeReply = async (opts) => {
+    if (!interaction.isButton()) {
+      if (interaction.isStringSelectMenu() || interaction.isModalSubmit()) {
+        const guildId = interaction.guild.id;
+        const dataPath = path.join(__dirname, '..', 'data', `${guildId}.json`);
+        return;
+      }
+      return;
+    }
+
+    const { customId, user } = interaction;
+    const userId = user.id;
+
+    const balasAman = async (options) => {
       try {
         if (interaction.replied || interaction.deferred) {
-          return interaction.followUp(opts);
+          return await interaction.followUp(options);
         }
-        return interaction.reply(opts);
-      } catch (error) {
-        console.error('Error during safeReply:', error);
+        return await interaction.reply(options);
+      } catch (err) {
+        console.error('Error saat membalas:', err);
       }
     };
 
-    const deny = () => safeReply({ content: 'This interaction is not for you!', flags: MessageFlags.Ephemeral });
+    const tombolBukanMilikmu = () =>
+      balasAman({
+        content: 'Ini bukan tombol untukmu!',
+        flags: MessageFlags.Ephemeral
+      });
 
-    const userId = interaction.user.id;
     let cmdPath = null;
-    let cmdName = '';
     let args = [];
-    let update = false;
+    let cmdName = '';
+    let harusUpdate = false;
 
-    const prefix = interaction.customId.split('_')[0];
+    const penanganTombol = {
+      megaslot_: () => {
+        const [_, bet, uid] = customId.split('_');
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/game/megaslot.js';
+        args = [bet];
+        cmdName = 'megaslot';
+      },
 
-    if (interaction.isButton() || interaction.isStringSelectMenu()) {
-      const map = {
-        megaslot_: () => {
-          const [, bet, uid] = interaction.customId.split('_');
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/game/megaslot';
-          args = [bet];
-          cmdName = 'megaslot';
-          update = true;
-        },
-        duelcoin_: () => {
-          const p = interaction.customId.split('_');
-          const uid = p.pop();
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/game/duelcoin';
-          args = p.slice(1);
-          cmdName = 'duelcoin';
-          update = true;
-        },
-        game_role_: () => {
-          const [,, uid] = interaction.customId.split('_');
-          if (userId !== uid && uid !== 'any') return deny();
-          cmdPath = '../commands/moderation/randomrole';
-          cmdName = 'randomrole';
-          args = interaction.values;
-        },
-        resetuser_: () => {
-          const [, uid] = interaction.customId.split('_');
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/admin/resetuser';
-          cmdName = 'resetuser';
-          args = [uid];
-        },
-        stalk_: () => {
-          const [, type, username, uid] = interaction.customId.split('_');
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/random/stalktt';
-          cmdName = 'stalktiktok';
-          args = [username, type];
-          update = true;
-        },
-        suit_: () => {
-          const [,, uid] = interaction.customId.split('_');
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/game/suit';
-          cmdName = 'suit';
-          args = interaction.values || [interaction.customId.split('_')[1]];
-          update = true;
-        },
-        tebaktombol_: () => {
-          const [, uid] = interaction.customId.split('_');
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/game/tebaktombol';
-          cmdName = 'tebaktombol';
-          args = [interaction.values?.[0] || interaction.customId.split('_')[1]];
-        },
-        voice_settings: () => {
-          const [, action, uid] = interaction.customId.split('_');
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/moderation/myvc';
-          cmdName = 'myvc';
-          args = [action];
-        },
-        myvc_: () => {
-          const [, action, uid] = interaction.customId.split('_');
-          if (userId !== uid) return deny();
-          cmdPath = '../commands/moderation/myvc';
-          cmdName = 'myvc';
-          args = [action];
-        },
-        gamerole_select: () => {
-          cmdPath = '../commands/moderation/gamerole';
-          cmdName = 'gamerole';
-          args = interaction.values;
-        },
-        random_role_select: () => {
-          cmdPath = '../commands/moderation/randomrole';
-          cmdName = 'randomrole';
-          args = interaction.values;
-        }
-      };
+      duelcoin_: () => {
+        const p = customId.split('_');
+        const uid = p.pop();
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/game/duelcoin.js';
+        args = p.slice(1);
+        cmdName = 'duelcoin';
+        if (['heads', 'tails', 'duel_decline', 'duel_accept'].includes(p[1])) harusUpdate = true;
+      },
 
-      if (map[prefix + '_']) {
-        const ret = map[prefix + '_']();
-        if (ret) return;
-      } else {
-        for (const dir of ['game', 'admin', 'ekonomi', 'toko', 'menubot', 'moderation', 'random']) {
-          const file = path.resolve(__dirname, `../commands/${dir}/${prefix}.js`);
-          if (fs.existsSync(file)) {
-            cmdPath = file;
-            cmdName = prefix;
-            const parts = interaction.customId.split('_');
-            const last = parts.at(-1);
-            if (/^\d{17,19}$/.test(last)) {
-              if (userId !== last) return deny();
-              args = parts.slice(1, -1);
-            } else {
-              args = parts.slice(1);
-            }
-            break;
+      suit_: () => {
+        const p = customId.split('_');
+        const uid = p.pop();
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/game/suit.js';
+        args = p.slice(1);
+        cmdName = 'suit';
+        if (['batu', 'kertas', 'gunting'].includes(p[1])) harusUpdate = true;
+      },
+
+      msuit_: () => {
+        const p = customId.split('_');
+        const uid = p.pop();
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/game/msuit.js';
+        args = p.slice(1);
+        cmdName = 'msuit';
+        if (['rock', 'paper', 'scissors'].includes(p[1])) harusUpdate = true;
+      },
+
+      stalk_: () => {
+        const p = customId.split('_');
+        const tipe = p[1];
+        const uid = p.pop();
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/random/stalktiktok.js';
+        args = tipe === 'videos' ? [p[2], 'videos'] : [p[2]];
+        cmdName = 'stalktiktok';
+        harusUpdate = true;
+      },
+
+      game_role_: () => {
+        const p = customId.split('_');
+        const uid = p.pop();
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/moderation/gamerole.js';
+        args = p.slice(1);
+        cmdName = 'gamerole';
+        harusUpdate = true;
+      },
+
+      cn_: () => {
+        const p = customId.split('_');
+        const uid = p.pop();
+        if (!customId.includes(`_${uid}`)) return tombolBukanMilikmu();
+        cmdPath = '../commands/moderation/cnresponse.js';
+        args = [p[0], uid];
+        cmdName = 'cnresponse';
+        harusUpdate = true;
+      },
+
+      myvc_: () => {
+        const p = customId.split('_');
+        const uid = p.pop();
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/moderation/myvc.js';
+        args = [p[1]];
+        cmdName = 'myvc';
+        if (['change', 'limit', 'lock', 'unlock', 'kick', 'hide', 'show', 'transfer', 'delete', 'refresh', 'clone'].includes(p[1])) harusUpdate = true;
+      },
+
+      listfit_: () => {
+        const p = customId.split('_');
+        const uid = p.pop();
+        if (userId !== uid) return tombolBukanMilikmu();
+        cmdPath = '../commands/info/listfit.js';
+        args = [p[1]];
+        cmdName = 'listfit';
+        if (['support', 'server', 'prev', 'next'].includes(p[1])) harusUpdate = true;
+      }
+    };
+
+    const prefix = customId.split('_')[0];
+    if (penanganTombol[prefix + '_']) {
+      penanganTombol[prefix + '_']();
+    } else {
+      for (const folder of ['game', 'admin', 'ekonomi', 'toko', 'menubot', 'moderation', 'random']) {
+        const cekPath = `../commands/${folder}/${prefix}.js`;
+        if (fs.existsSync(path.resolve(__dirname, cekPath))) {
+          cmdPath = cekPath;
+          cmdName = prefix;
+          const bagian = customId.split('_');
+          const terakhir = bagian.at(-1);
+          if (/^\d{17,19}$/.test(terakhir)) {
+            if (userId !== terakhir) return tombolBukanMilikmu();
+            args = bagian.slice(1, -1);
+          } else {
+            args = bagian.slice(1);
           }
+          break;
         }
       }
+    }
 
-      if (!cmdPath) return deny();
+    if (!cmdPath) {
+      return balasAman({
+        content: 'sepertinya tombol error silahkan beritahu anos!',
+        flags: MessageFlags.Ephemeral
+      });
+    }
 
-      try {
-        delete require.cache[require.resolve(cmdPath)];
-        const cmd = require(cmdPath);
-        const fakeMsg = {
-          author: interaction.user,
-          channel: interaction.channel,
-          guild: interaction.guild,
-          member: interaction.member,
-          content: `!${cmdName} ${args.join(' ')}`.trim(),
-          reply: update ? interaction.update.bind(interaction) : safeReply
-        };
-        if (cmd.execute) cmd.execute(fakeMsg, args, client);
-        if (interaction.isButton() && cmd.handleButtonInteraction) cmd.handleButtonInteraction(interaction, client);
-      } catch (err) {
-        console.error('Error executing command:', err);
-        safeReply({ content: 'An error occurred!', flags: MessageFlags.Ephemeral });
+    try {
+      delete require.cache[require.resolve(cmdPath)];
+      const cmd = require(cmdPath);
+      const pesanPalsu = {
+        author: user,
+        channel: interaction.channel,
+        guild: interaction.guild,
+        member: interaction.member,
+        content: `!main ${cmdName} ${args.join(' ')}`.trim(),
+        reply: harusUpdate ? interaction.update.bind(interaction) : balasAman
+      };
+      if (cmd.execute) cmd.execute(pesanPalsu, args, client);
+    } catch (e) {
+      console.error(e);
+      if (!interaction.replied && !interaction.deferred) {
+        balasAman({ content: 'Terjadi error!', flags: MessageFlags.Ephemeral });
       }
     }
   }
