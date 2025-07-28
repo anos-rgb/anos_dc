@@ -28,7 +28,13 @@
     "categoryId": "1398597970185949276",
     "textChannelId": "1398597972442353754",
     "voiceChannelId": "1398597974229127229",
-    "userChannels": {}
+    "userChannels": {
+      "1246506845942579311": {
+        "channelId": "1399287611570393090",
+        "ownerId": "1246506845942579311",
+        "createdAt": 1753686564848
+      }
+    }
   },
   "privateVC": {}
 }
