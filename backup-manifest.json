@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-07-28T04:52:44.041Z",
-  "backupCount": 2,
+  "timestamp": "2025-07-28T04:54:59.957Z",
+  "backupCount": 1,
   "totalFiles": 11,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v21.7.3",
-    "uptime": 133.637309205,
+    "uptime": 18.742370244,
     "memoryUsage": {
-      "rss": 92061696,
-      "heapTotal": 30937088,
-      "heapUsed": 29406520,
-      "external": 4336285,
-      "arrayBuffers": 813642
+      "rss": 90292224,
+      "heapTotal": 28577792,
+      "heapUsed": 26761176,
+      "external": 3913527,
+      "arrayBuffers": 390924
     }
   },
   "files": [
