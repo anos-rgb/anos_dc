@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-07-29T11:16:01.692Z",
-  "backupCount": 1,
+  "timestamp": "2025-07-29T11:17:56.435Z",
+  "backupCount": 2,
   "totalFiles": 11,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v21.7.3",
-    "uptime": 19.012768673,
+    "uptime": 133.75583027,
     "memoryUsage": {
-      "rss": 99430400,
-      "heapTotal": 29102080,
-      "heapUsed": 27089800,
-      "external": 3909433,
-      "arrayBuffers": 386830
+      "rss": 105213952,
+      "heapTotal": 30412800,
+      "heapUsed": 28511144,
+      "external": 4350386,
+      "arrayBuffers": 827743
     }
   },
   "files": [
@@ -53,7 +53,7 @@
     {
       "path": "data/database.json",
       "size": 6642,
-      "modified": "2025-07-29T11:15:05.099Z"
+      "modified": "2025-07-29T11:16:04.246Z"
     },
     {
       "path": "data/inviteRoles_1246508676181921872.json",
