@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-07-29T15:03:37.430Z",
-  "backupCount": 93,
+  "timestamp": "2025-07-29T15:05:38.515Z",
+  "backupCount": 94,
   "totalFiles": 12,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v21.7.3",
-    "uptime": 11056.383922544,
+    "uptime": 11177.469036696,
     "memoryUsage": {
-      "rss": 103563264,
-      "heapTotal": 36442112,
-      "heapUsed": 30023064,
-      "external": 4182509,
-      "arrayBuffers": 647054
+      "rss": 105910272,
+      "heapTotal": 39002112,
+      "heapUsed": 33058136,
+      "external": 4913126,
+      "arrayBuffers": 1377671
     }
   },
   "files": [
@@ -67,8 +67,8 @@
     },
     {
       "path": "data/voicesetup.json",
-      "size": 410,
-      "modified": "2025-07-29T15:02:59.925Z"
+      "size": 190,
+      "modified": "2025-07-29T15:05:22.999Z"
     },
     {
       "path": "data/warnings.json",
