@@ -1,190 +1,109 @@
 const fs = require('fs');
 const path = require('path');
-const {
-  PermissionFlagsBits,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-  ActionRowBuilder,
-  ButtonStyle,
-  MessageFlags
-} = require('discord.js');
 
-module.exports = {
-  name: 'interactionCreate',
-  once: false,
-  async execute(interaction, client) {
-    if (!interaction.isButton()) {
-      if (interaction.isStringSelectMenu() || interaction.isModalSubmit()) {
+const commandFiles = fs.readdirSync(path.join(__dirname, '../commands')).filter(file => file.endsWith('.js'));
+const commands = {};
+
+for (const file of commandFiles) {
+  const command = require(path.join(__dirname, '../commands', file));
+  if (command.name) commands[command.name] = command;
+}
+
+module.exports = async (client, interaction) => {
+  if (!interaction.isButton() && !interaction.isStringSelectMenu()) return;
+
+  try {
+    if (interaction.isButton()) {
+      const buttonId = interaction.customId;
+      for (const [name, command] of Object.entries(commands)) {
+        if (command.handleButtonInteraction && (buttonId.startsWith(name) || buttonId.includes(name))) {
+          await command.handleButtonInteraction(interaction, client);
+          return;
+        }
+      }
+      if (buttonId.startsWith('change_vc_name')) {
+        await interaction.showModal({
+          title: 'Ubah Nama Channel',
+          customId: 'change_vc_name',
+          components: [{
+            type: 1,
+            components: [{
+              type: 4,
+              customId: 'new_name',
+              label: 'Masukkan nama baru',
+              style: 1,
+              required: true,
+            }]
+          }]
+        });
+      } else if (buttonId.startsWith('set_vc_limit')) {
+        await interaction.showModal({
+          title: 'Atur Limit User',
+          customId: 'set_vc_limit',
+          components: [{
+            type: 1,
+            components: [{
+              type: 4,
+              customId: 'new_limit',
+              label: 'Masukkan limit (0 untuk unlimited)',
+              style: 1,
+              required: true,
+            }]
+          }]
+        });
+      } else if (buttonId.startsWith('delete_channel')) {
+        await interaction.deferUpdate();
+        const userId = interaction.user.id;
         const guildId = interaction.guild.id;
-        const dataPath = path.join(__dirname, '..', 'data', `${guildId}.json`);
-        return;
+        const dataPath = path.join(__dirname, '..', '..', 'data', `${guildId}.json`);
+        const guildData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+        const userChannel = guildData.createVoice.userChannels?.[userId];
+        if (userChannel) {
+          const channel = await interaction.guild.channels.fetch(userChannel.channelId);
+          await channel.delete();
+          delete guildData.createVoice.userChannels[userId];
+          fs.writeFileSync(dataPath, JSON.stringify(guildData, null, 2));
+          await interaction.followUp({ content: 'Channel telah dihapus', ephemeral: true });
+        }
       }
-      return;
     }
 
-    const { customId, user } = interaction;
-    const userId = user.id;
-
-    const balasAman = async (options) => {
-      try {
-        if (interaction.replied || interaction.deferred) {
-          return await interaction.followUp(options);
-        }
-        return await interaction.reply(options);
-      } catch (err) {
-        console.error('Error saat membalas:', err);
-      }
-    };
-
-    const tombolBukanMilikmu = () =>
-      balasAman({
-        content: 'Ini bukan tombol untukmu!',
-        flags: MessageFlags.Ephemeral
-      });
-
-    let cmdPath = null;
-    let args = [];
-    let cmdName = '';
-    let harusUpdate = false;
-
-    const penanganTombol = {
-      megaslot_: () => {
-        const [_, bet, uid] = customId.split('_');
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/game/megaslot.js';
-        args = [bet];
-        cmdName = 'megaslot';
-      },
-
-      duelcoin_: () => {
-        const p = customId.split('_');
-        const uid = p.pop();
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/game/duelcoin.js';
-        args = p.slice(1);
-        cmdName = 'duelcoin';
-        if (['heads', 'tails', 'duel_decline', 'duel_accept'].includes(p[1])) harusUpdate = true;
-      },
-
-      suit_: () => {
-        const p = customId.split('_');
-        const uid = p.pop();
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/game/suit.js';
-        args = p.slice(1);
-        cmdName = 'suit';
-        if (['batu', 'kertas', 'gunting'].includes(p[1])) harusUpdate = true;
-      },
-
-      msuit_: () => {
-        const p = customId.split('_');
-        const uid = p.pop();
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/game/msuit.js';
-        args = p.slice(1);
-        cmdName = 'msuit';
-        if (['rock', 'paper', 'scissors'].includes(p[1])) harusUpdate = true;
-      },
-
-      stalk_: () => {
-        const p = customId.split('_');
-        const tipe = p[1];
-        const uid = p.pop();
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/random/stalktiktok.js';
-        args = tipe === 'videos' ? [p[2], 'videos'] : [p[2]];
-        cmdName = 'stalktiktok';
-        harusUpdate = true;
-      },
-
-      game_role_: () => {
-        const p = customId.split('_');
-        const uid = p.pop();
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/moderation/gamerole.js';
-        args = p.slice(1);
-        cmdName = 'gamerole';
-        harusUpdate = true;
-      },
-
-      cn_: () => {
-        const p = customId.split('_');
-        const uid = p.pop();
-        if (!customId.includes(`_${uid}`)) return tombolBukanMilikmu();
-        cmdPath = '../commands/moderation/cnresponse.js';
-        args = [p[0], uid];
-        cmdName = 'cnresponse';
-        harusUpdate = true;
-      },
-
-      myvc_: () => {
-        const p = customId.split('_');
-        const uid = p.pop();
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/moderation/myvc.js';
-        args = [p[1]];
-        cmdName = 'myvc';
-        if (['change', 'limit', 'lock', 'unlock', 'kick', 'hide', 'show', 'transfer', 'delete', 'refresh', 'clone'].includes(p[1])) harusUpdate = true;
-      },
-
-      listfit_: () => {
-        const p = customId.split('_');
-        const uid = p.pop();
-        if (userId !== uid) return tombolBukanMilikmu();
-        cmdPath = '../commands/info/listfit.js';
-        args = [p[1]];
-        cmdName = 'listfit';
-        if (['support', 'server', 'prev', 'next'].includes(p[1])) harusUpdate = true;
-      }
-    };
-
-    const prefix = customId.split('_')[0];
-    if (penanganTombol[prefix + '_']) {
-      penanganTombol[prefix + '_']();
-    } else {
-      for (const folder of ['game', 'admin', 'ekonomi', 'toko', 'menubot', 'moderation', 'random']) {
-        const cekPath = `../commands/${folder}/${prefix}.js`;
-        if (fs.existsSync(path.resolve(__dirname, cekPath))) {
-          cmdPath = cekPath;
-          cmdName = prefix;
-          const bagian = customId.split('_');
-          const terakhir = bagian.at(-1);
-          if (/^\d{17,19}$/.test(terakhir)) {
-            if (userId !== terakhir) return tombolBukanMilikmu();
-            args = bagian.slice(1, -1);
-          } else {
-            args = bagian.slice(1);
+    if (interaction.isStringSelectMenu()) {
+      const menuId = interaction.customId;
+      if (menuId === 'voice_settings') {
+        await interaction.deferUpdate();
+        const value = interaction.values[0];
+        const userId = interaction.user.id;
+        const guildId = interaction.guild.id;
+        const dataPath = path.join(__dirname, '..', '..', 'data', `${guildId}.json`);
+        const guildData = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+        const userChannel = guildData.createVoice.userChannels?.[userId];
+        if (userChannel) {
+          const channel = await interaction.guild.channels.fetch(userChannel.channelId);
+          try {
+            if (value === 'toggle_lock') {
+              const isLocked = channel.permissionOverwrites.cache.some(overwrite => 
+                overwrite.id === interaction.guild.id && overwrite.deny.has('Connect')
+              );
+              await channel.permissionOverwrites.edit(interaction.guild.id, {
+                Connect: isLocked ? null : false
+              });
+              await interaction.followUp({ content: isLocked ? 'Channel telah dibuka' : 'Channel telah dikunci', ephemeral: true });
+            } else if (value === 'toggle_visibility') {
+              const isHidden = !channel.permissionOverwrites.cache.get(interaction.guild.id)?.allow?.has('ViewChannel');
+              await channel.permissionOverwrites.edit(interaction.guild.id, {
+                ViewChannel: isHidden ? true : null
+              });
+              await interaction.followUp({ content: isHidden ? 'Channel telah ditampilkan' : 'Channel telah disembunyikan', ephemeral: true });
+            }
+          } catch (error) {
+            await interaction.followUp({ content: 'Gagal memproses permintaan', ephemeral: true });
           }
-          break;
         }
       }
     }
-
-    if (!cmdPath) {
-      return balasAman({
-        content: 'sepertinya tombol error silahkan beritahu anos!',
-        flags: MessageFlags.Ephemeral
-      });
-    }
-
-    try {
-      delete require.cache[require.resolve(cmdPath)];
-      const cmd = require(cmdPath);
-      const pesanPalsu = {
-        author: user,
-        channel: interaction.channel,
-        guild: interaction.guild,
-        member: interaction.member,
-        content: `!main ${cmdName} ${args.join(' ')}`.trim(),
-        reply: harusUpdate ? interaction.update.bind(interaction) : balasAman
-      };
-      if (cmd.execute) cmd.execute(pesanPalsu, args, client);
-    } catch (e) {
-      console.error(e);
-      if (!interaction.replied && !interaction.deferred) {
-        balasAman({ content: 'Terjadi error!', flags: MessageFlags.Ephemeral });
-      }
-    }
+  } catch (error) {
+    await interaction.reply({ content: 'Terjadi kesalahan', ephemeral: true });
+    console.error(error);
   }
 };
