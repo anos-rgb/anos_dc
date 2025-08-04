@@ -31,6 +31,8 @@
     "qrcode": "^1.5.3",
     "puppeteer": "^19.7.2",
     "cheerio": "^1.0.0-rc.12",
+    "xml2js": "^0.6.2",
+    "youtube-api": "^2.0.0",
     "@google/generative-ai": "^0.5.0"
   },
   "devDependencies": {
