@@ -13,7 +13,7 @@ module.exports = {
     const uid = msg.author.id;
     const u = client.database.users[uid] || { saldo:0, statistik:{command_digunakan:0} };
 
-    const allowed = ['admin','ekonomi','game','menubot','moderation','random','toko'];
+    const allowed = ['admin','ekonomi','game','menubot','moderation','random','toko', "voice"];
     const cats = {};
     allowed.forEach(c=>{
       cats[c]=[];
