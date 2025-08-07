@@ -123,11 +123,11 @@
       }
     },
     "1343596142658584587": {
-      "saldo": 1058,
+      "saldo": 2887,
       "inventori": [],
       "statistik": {
         "game_dimainkan": 29,
-        "command_digunakan": 99,
+        "command_digunakan": 102,
         "kerja_terakhir": 1750307019556,
         "streaming_terakhir": 1750234919508,
         "nguli_terakhir": 1750235622139,
@@ -135,7 +135,9 @@
         "youtube_terakhir": 1752731589487,
         "youtube_subscriber": 59,
         "twitch_terakhir": 1752731632366,
-        "twitch_subscribers": 4
+        "twitch_subscribers": 4,
+        "instagram_terakhir": 1754580652701,
+        "instagram_followers": 39
       },
       "riwayat_beli": []
     },
@@ -251,10 +253,10 @@
     }
   ],
   "statistik_game": {
-    "penghasilan_harian": 56504,
+    "penghasilan_harian": 58658,
     "total_transaksi": 0,
     "tod_dimainkan": 2,
-    "total_kemenangan": 13,
+    "total_kemenangan": 14,
     "koin_beredar": null
   },
   "pajak": 50,
