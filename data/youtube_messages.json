@@ -1,0 +1,6 @@
+{
+  "video": "📹 **{author}** baru upload video:\n**{title}**\n🔗 {url}",
+  "short": "⚡ **{author}** baru upload short:\n**{title}**\n🔗 {url}",
+  "live": "🔴 **{author}** sedang live:\n**{title}**\n🔗 {url}",
+  "upcoming": "⏰ **{author}** akan live:\n**{title}**\n🔗 {url}"
+}
