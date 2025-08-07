@@ -1,17 +1,24 @@
+const fs = require('fs');
+const { ChannelType, PermissionFlagsBits } = require('discord.js');
+
 module.exports = {
     name: 'voiceStateUpdate',
     async execute(oldState, newState, client) {
-        const fs = require('fs');
         const path = './data/voicesetup.json';
         
         if (!fs.existsSync(path)) return;
         
-        const data = JSON.parse(fs.readFileSync(path, 'utf8'));
-        const guildData = data[newState.guild.id];
+        let data;
+        try {
+            data = JSON.parse(fs.readFileSync(path, 'utf8'));
+        } catch (error) {
+            console.error('Error reading voice setup data:', error);
+            return;
+        }
         
+        const guildData = data[newState.guild.id];
         if (!guildData) return;
 
-        // Handle user joining the main voice channel
         if (newState.channelId === guildData.voiceChannelId && !oldState.channelId) {
             try {
                 const member = newState.member;
@@ -20,7 +27,6 @@ module.exports = {
                 
                 if (!category) return;
 
-                // Check if user already has a channel
                 const existingChannelData = Object.values(guildData.createdChannels).find(ch => ch.ownerId === member.id);
                 if (existingChannelData) {
                     const existingChannel = guild.channels.cache.get(existingChannelData.channelId);
@@ -30,23 +36,32 @@ module.exports = {
                     }
                 }
 
-                // Create new voice channel
-                const voiceChannel = await guild.channels.create(`${member.displayName}'s voice`, {
-                    type: 'GUILD_VOICE',
+                const voiceChannel = await guild.channels.create({
+                    name: `${member.displayName}'s voice`,
+                    type: ChannelType.GuildVoice,
                     parent: category.id,
                     permissionOverwrites: [
                         {
                             id: member.id,
-                            allow: ['MANAGE_CHANNELS', 'MANAGE_PERMISSIONS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+                            allow: [
+                                PermissionFlagsBits.ManageChannels,
+                                PermissionFlagsBits.ManageRoles,
+                                PermissionFlagsBits.MuteMembers,
+                                PermissionFlagsBits.DeafenMembers,
+                                PermissionFlagsBits.MoveMembers
+                            ]
                         },
                         {
                             id: guild.roles.everyone.id,
-                            allow: ['VIEW_CHANNEL', 'CONNECT', 'SPEAK']
+                            allow: [
+                                PermissionFlagsBits.ViewChannel,
+                                PermissionFlagsBits.Connect,
+                                PermissionFlagsBits.Speak
+                            ]
                         }
                     ]
                 });
 
-                // Save channel data
                 guildData.createdChannels[member.id] = {
                     channelId: voiceChannel.id,
                     ownerId: member.id,
@@ -56,10 +71,8 @@ module.exports = {
                 
                 fs.writeFileSync(path, JSON.stringify(data, null, 2));
 
-                // Move user to new channel
                 await member.voice.setChannel(voiceChannel);
 
-                // Send notification
                 const textChannel = guild.channels.cache.get(guildData.textChannelId);
                 if (textChannel) {
                     const embed = {
@@ -82,7 +95,6 @@ module.exports = {
             }
         }
 
-        // Handle user leaving a channel
         if (oldState.channelId && !newState.channelId) {
             const channelData = Object.entries(guildData.createdChannels).find(([userId, data]) => 
                 data.channelId === oldState.channelId
@@ -94,7 +106,6 @@ module.exports = {
                 
                 if (channel) {
                     try {
-                        // Check if channel is empty and not protected
                         if (channel.members.size === 0 && !channelInfo.protected) {
                             delete guildData.createdChannels[ownerId];
                             fs.writeFileSync(path, JSON.stringify(data, null, 2));
@@ -124,10 +135,8 @@ module.exports = {
             }
         }
 
-        // Handle user moving between channels
         if (oldState.channelId !== newState.channelId) {
             try {
-                // Handle ownership transfer if original owner leaves
                 const oldChannelData = Object.entries(guildData.createdChannels).find(([userId, data]) => 
                     data.channelId === oldState.channelId
                 );
@@ -160,17 +169,14 @@ module.exports = {
                     }
                 }
 
-                // Handle new channel join
                 if (newState.channelId) {
                     const newChannel = newState.guild.channels.cache.get(newState.channelId);
                     if (newChannel && newChannel.parentId === guildData.categoryId && newChannel.id !== guildData.voiceChannelId) {
-                        // Update channel data if needed
                         const newChannelData = Object.values(guildData.createdChannels).find(ch => 
                             ch.channelId === newChannel.id
                         );
                         
                         if (newChannelData) {
-                            // Update owner if needed
                             if (!newChannel.members.get(newChannelData.ownerId)) {
                                 const newOwner = newChannel.members.first();
                                 if (newOwner) {
