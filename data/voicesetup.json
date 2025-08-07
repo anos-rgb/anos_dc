@@ -1,8 +1,15 @@
 {
   "1246508676181921872": {
-    "categoryId": "1403060860997337239",
-    "textChannelId": "1403060863182573649",
-    "voiceChannelId": "1403060865485246507",
-    "createdChannels": {}
+    "categoryId": "1403061558938173575",
+    "textChannelId": "1403061562562052128",
+    "voiceChannelId": "1403061564902477907",
+    "createdChannels": {
+      "1246506845942579311": {
+        "channelId": "1403061585496375338",
+        "ownerId": "1246506845942579311",
+        "createdAt": 1754586349935,
+        "bannedUsers": []
+      }
+    }
   }
 }
