@@ -1,23 +1,11 @@
-{
-  "1246508676181921872": {
-    "channels": {
-      "anospemula": {
-        "url": "https://www.youtube.com/@anospemula",
-        "discordChannelId": "1398597693735043112",
-        "useEmbed": true,
-        "addedBy": "1246506845942579311",
-        "addedAt": 1754587307003,
-        "lastVideoId": null
-      }
-    },
-    "settings": {
-      "useEmbed": false
-    },
-    "customMessages": {
-      "video": "📹 **{author}** baru upload video:\n**{title}**\n🔗 {url}",
-      "short": "⚡ **{author}** baru upload short:\n**{title}**\n🔗 {url}",
-      "live": "🔴 **{author}** sedang live:\n**{title}**\n🔗 {url}",
-      "upcoming": "⏰ **{author}** akan live:\n**{title}**\n🔗 {url}"
-    }
+[
+  {
+    "url": "https://www.youtube.com/@10thwonderrr",
+    "channelId": "10thwonderrr",
+    "discordChannelId": "1398341053269938262",
+    "useEmbed": true,
+    "addedBy": "1246506845942579311",
+    "addedAt": "2025-08-07T18:19:05.989Z",
+    "lastVideoId": null
   }
-}
+]
