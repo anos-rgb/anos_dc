@@ -1,50 +1,72 @@
+const fs = require('fs');
+const path = require('path');
+const { PermissionFlagsBits, ChannelType } = require('discord.js');
+
 module.exports = {
     name: 'setup',
     description: 'Setup sistem voice channel otomatis - dibuat oleh anos6501',
     aliases: ['setupvoice', 'vcsetup'],
     cooldown: 10,
     async execute(message, args, client) {
-        if (!message.member.permissions.has('MANAGE_CHANNELS')) {
+        if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
             return message.reply('❌ Lo butuh permission `MANAGE_CHANNELS` buat setup ini!');
         }
-
+        
         try {
             const guild = message.guild;
             
-            const category = await guild.channels.create('CREATE VOICE', {
-                type: 'GUILD_CATEGORY',
-                position: 0
+            if (!fs.existsSync('./data')) {
+                fs.mkdirSync('./data', { recursive: true });
+            }
+            
+            const category = await guild.channels.create({
+                name: 'CREATE VOICE',
+                type: ChannelType.GuildCategory
             });
-
-            const textChannel = await guild.channels.create('voice-settings', {
-                type: 'GUILD_TEXT',
+            
+            const textChannel = await guild.channels.create({
+                name: 'voice-settings',
+                type: ChannelType.GuildText,
                 parent: category.id,
                 topic: 'Tempat untuk mengatur voice channel - hanya bisa diatur disini!',
                 permissionOverwrites: [
                     {
                         id: guild.roles.everyone.id,
-                        allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'READ_MESSAGE_HISTORY']
+                        allow: [
+                            PermissionFlagsBits.ViewChannel,
+                            PermissionFlagsBits.SendMessages,
+                            PermissionFlagsBits.ReadMessageHistory
+                        ]
                     }
                 ]
             });
-
-            const voiceChannel = await guild.channels.create('JOIN TO CREATE', {
-                type: 'GUILD_VOICE',
+            
+            const voiceChannel = await guild.channels.create({
+                name: 'JOIN TO CREATE',
+                type: ChannelType.GuildVoice,
                 parent: category.id,
                 permissionOverwrites: [
                     {
                         id: guild.roles.everyone.id,
-                        allow: ['VIEW_CHANNEL', 'CONNECT']
+                        allow: [
+                            PermissionFlagsBits.ViewChannel,
+                            PermissionFlagsBits.Connect
+                        ]
                     }
                 ]
             });
-
-            const fs = require('fs');
-            const path = './data/voicesetup.json';
+            
+            const dataPath = './data/voicesetup.json';
             let data = {};
             
-            if (fs.existsSync(path)) {
-                data = JSON.parse(fs.readFileSync(path, 'utf8'));
+            if (fs.existsSync(dataPath)) {
+                try {
+                    const fileContent = fs.readFileSync(dataPath, 'utf8');
+                    data = JSON.parse(fileContent);
+                } catch (parseError) {
+                    console.error('Error parsing existing data:', parseError);
+                    data = {};
+                }
             }
             
             data[guild.id] = {
@@ -54,8 +76,8 @@ module.exports = {
                 createdChannels: {}
             };
             
-            fs.writeFileSync(path, JSON.stringify(data, null, 2));
-
+            fs.writeFileSync(dataPath, JSON.stringify(data, null, 2));
+            
             const embed = {
                 color: 0x00ff00,
                 title: '✅ Voice Setup Berhasil!',
@@ -74,12 +96,12 @@ module.exports = {
                 },
                 timestamp: new Date()
             };
-
-            message.reply({ embeds: [embed] });
-
+            
+            await message.reply({ embeds: [embed] });
+            
         } catch (error) {
             console.error('Setup voice error:', error);
-            message.reply('❌ Terjadi error saat setup voice channel!');
+            await message.reply('❌ Terjadi error saat setup voice channel! Pastikan bot memiliki permission yang cukup.');
         }
     }
 };
