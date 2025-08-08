@@ -1,0 +1,584 @@
+const fs = require('fs');
+const path = require('path');
+const axios = require('axios');
+const { EmbedBuilder } = require('discord.js');
+
+class YouTubeNotifier {
+    constructor(client) {
+        this.client = client;
+        this.dataPath = path.join(__dirname, '../data/youtube_notifications.json');
+        this.checkInterval = 60 * 1000;
+        this.start();
+    }
+
+    async start() {
+        await this.initializeDatabase();
+        await this.checkAllChannels();
+        setInterval(() => this.checkAllChannels(), this.checkInterval);
+    }
+
+    async initializeDatabase() {
+        if (!fs.existsSync(this.dataPath)) {
+            fs.writeFileSync(this.dataPath, JSON.stringify([], null, 2));
+        }
+    }
+
+    async checkAllChannels() {
+        const notifications = JSON.parse(fs.readFileSync(this.dataPath, 'utf8'));
+        
+        for (const notif of notifications) {
+            try {
+                let channelId = notif.channelId;
+                
+                if (!channelId || !channelId.startsWith('UC')) {
+                    console.log(`Resolving channel ID for: ${notif.url}`);
+                    channelId = await this.getRealChannelId(notif.url);
+                    if (!channelId) {
+                        console.error(`Failed to get channel ID for: ${notif.url}`);
+                        continue;
+                    }
+                    
+                    notif.channelId = channelId;
+                    this.saveNotifications(notifications);
+                    console.log(`Saved channel ID: ${channelId}`);
+                }
+                
+                await this.checkNewVideo(notif, notifications);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+            } catch (error) {
+                console.error(`Error processing ${notif.url}:`, error.message);
+            }
+        }
+    }
+
+    saveNotifications(notifications) {
+        fs.writeFileSync(this.dataPath, JSON.stringify(notifications, null, 2));
+    }
+
+    async getRealChannelId(url) {
+        const username = url.split('@')[1];
+        const methods = [
+            () => this.fetchFromYouTubeDirect(username || url),
+            () => this.fetchFromInvidiousInstances(username),
+            () => this.fetchFromLemnoslife(username),
+            () => this.scrapeFromYouTube(url)
+        ];
+        
+        for (const method of methods) {
+            try {
+                const id = await method();
+                if (id && id.startsWith('UC')) {
+                    console.log(`Successfully got channel ID: ${id}`);
+                    return id;
+                }
+            } catch (error) {
+                console.error(`Method failed:`, error.message);
+            }
+        }
+        
+        return null;
+    }
+
+    async fetchFromYouTubeDirect(username) {
+        const cleanUsername = username.replace('@', '');
+        const targetUrl = `https://www.youtube.com/@${cleanUsername}`;
+        
+        const res = await axios.get(targetUrl, {
+            headers: { 
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            timeout: 15000
+        });
+        
+        const channelIdMatch = res.data.match(/"channelId":"(UC[\w-]{22})"/);
+        const externalIdMatch = res.data.match(/"externalId":"(UC[\w-]{22})"/);
+        
+        return channelIdMatch?.[1] || externalIdMatch?.[1];
+    }
+
+    async fetchFromInvidiousInstances(username) {
+        const instances = [
+            'https://invidious.fdn.fr',
+            'https://inv.riverside.rocks',
+            'https://invidious.sethforprivacy.com',
+            'https://vid.puffyan.us',
+            'https://invidious.tiekoetter.com'
+        ];
+
+        for (const instance of instances) {
+            try {
+                const res = await axios.get(`${instance}/api/v1/channels/@${username}`, {
+                    timeout: 8000
+                });
+                const channelId = res.data?.authorId;
+                if (channelId && channelId.startsWith('UC')) {
+                    return channelId;
+                }
+            } catch (error) {
+                continue;
+            }
+        }
+        return null;
+    }
+
+    async fetchFromLemnoslife(username) {
+        try {
+            const res = await axios.get(`https://yt.lemnoslife.com/channels?handle=@${username}`, {
+                timeout: 8000
+            });
+            return res.data?.items?.[0]?.id;
+        } catch (error) {
+            const res = await axios.get(`https://yt.lemnoslife.com/noKey/channels?part=id&forUsername=${username}`, {
+                timeout: 8000
+            });
+            return res.data?.items?.[0]?.id;
+        }
+    }
+
+    async scrapeFromYouTube(url) {
+        const targetUrl = url.includes('@') ? url : `https://youtube.com/@${url}`;
+        const res = await axios.get(targetUrl, {
+            headers: { 
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5'
+            },
+            timeout: 15000
+        });
+        
+        const patterns = [
+            /"channelId":"(UC[\w-]{22})"/,
+            /"externalId":"(UC[\w-]{22})"/,
+            /channel\/(UC[\w-]{22})/,
+            /"browseId":"(UC[\w-]{22})"/
+        ];
+        
+        for (const pattern of patterns) {
+            const match = res.data.match(pattern);
+            if (match && match[1]) {
+                return match[1];
+            }
+        }
+        
+        return null;
+    }
+
+    async checkNewVideo(notif, notifications) {
+        const videos = await this.getLatestVideos(notif.channelId);
+        if (!videos || videos.length === 0) {
+            console.log(`No videos found for channel: ${notif.channelId}`);
+            return;
+        }
+
+        console.log(`Found ${videos.length} videos for channel ${notif.channelId}`);
+
+        // Jika ini pertama kali check channel, set lastVideoId tanpa kirim notifikasi
+        if (!notif.lastVideoId) {
+            notif.lastVideoId = videos[0].videoId;
+            notif.lastCheckTime = new Date().toISOString();
+            this.saveNotifications(notifications);
+            console.log(`Initial setup - set last video ID to: ${videos[0].videoId} without notification`);
+            return;
+        }
+
+        // Cari video yang lebih baru dari lastVideoId
+        const newVideos = [];
+        for (const video of videos) {
+            if (video.videoId === notif.lastVideoId) {
+                break; // Stop ketika mencapai video yang sudah diketahui
+            }
+            newVideos.push(video);
+        }
+
+        if (newVideos.length === 0) {
+            console.log(`No new videos found for channel ${notif.channelId}`);
+            return;
+        }
+
+        console.log(`Found ${newVideos.length} new videos`);
+
+        // Kirim notifikasi hanya untuk video baru (dalam urutan terbaru ke terlama)
+        for (const video of newVideos.reverse()) { // Reverse agar video lama dikirim dulu
+            if (!video || !video.videoId) {
+                console.log('Skipping invalid video data');
+                continue;
+            }
+            
+            if (this.shouldNotifyForVideo(video, notif)) {
+                console.log(`Sending notification for NEW video: ${video.title}`);
+                await this.sendNotification(notif, video);
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Delay lebih lama untuk menghindari spam
+            } else {
+                console.log(`Skipping notification for video: ${video.title} (filtered out)`);
+            }
+        }
+
+        // Update lastVideoId ke video terbaru
+        notif.lastVideoId = videos[0].videoId;
+        notif.lastCheckTime = new Date().toISOString();
+        this.saveNotifications(notifications);
+        console.log(`Updated last video ID to: ${videos[0].videoId}`);
+    }
+
+    shouldNotifyForVideo(video, notif) {
+        const isShort = this.isYouTubeShort(video);
+        const isLive = this.isLiveVideo(video);
+        
+        if (notif.notifyShorts === false && isShort) return false;
+        if (notif.notifyLive === false && isLive) return false;
+        
+        return true;
+    }
+
+    isYouTubeShort(video) {
+        if (!video) return false;
+        
+        const duration = video.lengthSeconds || 0;
+        const title = (video.title || '').toLowerCase();
+        const description = (video.description || '').toLowerCase();
+        
+        return duration <= 60 || 
+               title.includes('#shorts') || 
+               description.includes('#shorts') ||
+               video.isShort === true;
+    }
+
+    isLiveVideo(video) {
+        if (!video) return false;
+        
+        return video.liveNow === true || 
+               video.isLive === true ||
+               video.lengthSeconds === 0 ||
+               (video.title && video.title.toLowerCase().includes('live'));
+    }
+
+    async getLatestVideos(channelId) {
+        const apis = [
+            () => this.fetchFromRSSFeed(channelId),
+            () => this.fetchFromInvidiousInstances(channelId, 'videos'),
+            () => this.fetchFromLemnoslifeApi(channelId),
+            () => this.fetchFromDirectScrape(channelId)
+        ];
+
+        for (const api of apis) {
+            try {
+                const videos = await api();
+                if (videos && videos.length > 0) {
+                    console.log(`Successfully fetched ${videos.length} videos`);
+                    return videos;
+                }
+            } catch (error) {
+                console.error('API failed:', error.message);
+            }
+        }
+
+        return null;
+    }
+
+    async fetchFromRSSFeed(channelId) {
+        const res = await axios.get(`https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`, {
+            timeout: 10000,
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (compatible; RSS Reader)'
+            }
+        });
+
+        const entries = res.data.match(/<entry>(.*?)<\/entry>/gs) || [];
+        const videos = [];
+
+        for (const entry of entries.slice(0, 5)) {
+            const videoId = entry.match(/<yt:videoId>(.*?)<\/yt:videoId>/)?.[1];
+            const titleMatch = entry.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || 
+                              entry.match(/<title>(.*?)<\/title>/);
+            const published = entry.match(/<published>(.*?)<\/published>/)?.[1];
+            
+            if (videoId && titleMatch) {
+                const title = titleMatch[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+                
+                videos.push({
+                    videoId: videoId,
+                    title: title,
+                    publishedText: published,
+                    lengthSeconds: 0,
+                    description: '',
+                    author: entry.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/) || 
+                            entry.match(/<name>(.*?)<\/name>/)
+                });
+            }
+        }
+
+        console.log(`RSS Feed found ${videos.length} videos`);
+        return videos;
+    }
+
+    async fetchFromInvidiousInstances(channelId, endpoint = '') {
+        const instances = [
+            'https://invidious.fdn.fr',
+            'https://inv.riverside.rocks',
+            'https://invidious.sethforprivacy.com',
+            'https://vid.puffyan.us',
+            'https://invidious.tiekoetter.com'
+        ];
+
+        for (const instance of instances) {
+            try {
+                let url;
+                if (endpoint === 'videos') {
+                    url = `${instance}/api/v1/channels/${channelId}/videos?sortBy=newest`;
+                } else {
+                    url = `${instance}/api/v1/channels/@${channelId}`;
+                }
+
+                const res = await axios.get(url, { timeout: 8000 });
+                
+                if (endpoint === 'videos') {
+                    return res.data?.slice(0, 5);
+                } else {
+                    return res.data?.authorId;
+                }
+            } catch (error) {
+                continue;
+            }
+        }
+        return null;
+    }
+
+    async fetchFromLemnoslifeApi(channelId) {
+        try {
+            const res = await axios.get(`https://yt.lemnoslife.com/channels/${channelId}/videos`, {
+                timeout: 8000
+            });
+            return res.data?.items?.slice(0, 5);
+        } catch (error) {
+            const res = await axios.get(`https://yt.lemnoslife.com/noKey/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=5`, {
+                timeout: 8000
+            });
+            return res.data?.items?.map(item => ({
+                videoId: item.id?.videoId,
+                title: item.snippet?.title,
+                description: item.snippet?.description,
+                publishedText: item.snippet?.publishedAt
+            }));
+        }
+    }
+
+    async fetchFromDirectScrape(channelId) {
+        const res = await axios.get(`https://www.youtube.com/channel/${channelId}/videos`, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            timeout: 15000
+        });
+
+        const videoMatches = res.data.matchAll(/"videoId":"([\w-]{11})".*?"title":{"runs":\[{"text":"(.*?)"}.*?"lengthText":{"simpleText":"(.*?)"}/gs);
+        const videos = [];
+
+        for (const match of videoMatches) {
+            if (videos.length >= 5) break;
+            
+            const [, videoId, title, duration] = match;
+            videos.push({
+                videoId: videoId,
+                title: title,
+                lengthSeconds: this.parseDuration(duration),
+                description: ''
+            });
+        }
+
+        return videos;
+    }
+
+    parseDuration(durationStr) {
+        if (!durationStr) return 0;
+        
+        const parts = durationStr.split(':').reverse();
+        let seconds = 0;
+        
+        for (let i = 0; i < parts.length; i++) {
+            seconds += parseInt(parts[i] || 0) * Math.pow(60, i);
+        }
+        
+        return seconds;
+    }
+
+    async sendNotification(notif, video) {
+        try {
+            const channel = this.client.channels.cache.get(notif.discordChannelId);
+            if (!channel) {
+                console.error(`Discord channel not found: ${notif.discordChannelId}`);
+                return;
+            }
+
+            if (!video.videoId || !video.title) {
+                console.error('Invalid video data for notification');
+                return;
+            }
+
+            const isShort = this.isYouTubeShort(video);
+            const isLive = this.isLiveVideo(video);
+            
+            let videoType = '📹 Video Baru';
+            let color = '#FF0000';
+            let pingMessage = '';
+            
+            if (isLive) {
+                videoType = '🔴 LIVE SEKARANG';
+                color = '#FF0000';
+                pingMessage = '**🔴 LIVE STREAM DIMULAI!**';
+            } else if (isShort) {
+                videoType = '📱 YouTube Shorts Baru';
+                color = '#FF6B6B';
+            }
+
+            const title = this.sanitizeText(video.title);
+            const description = video.description ? 
+                this.sanitizeText(video.description.substring(0, 200)) + '...' : 
+                'Tidak ada deskripsi';
+
+            const embed = new EmbedBuilder()
+                .setTitle(`${videoType}`)
+                .setURL(`https://youtu.be/${video.videoId}`)
+                .setDescription(`**${title}**\n\n${description}`)
+                .setThumbnail(this.getBestThumbnail(video))
+                .setColor(color)
+                .setFooter({ text: `Channel: ${notif.channelName || 'YouTube'} • Baru saja` })
+                .setTimestamp();
+
+            if (video.lengthSeconds && video.lengthSeconds > 0) {
+                embed.addFields({
+                    name: 'Durasi',
+                    value: this.formatDuration(video.lengthSeconds),
+                    inline: true
+                });
+            }
+
+            if (isLive) {
+                embed.addFields({
+                    name: 'Status',
+                    value: '🔴 SEDANG LIVE',
+                    inline: true
+                });
+            } else if (isShort) {
+                embed.addFields({
+                    name: 'Tipe',
+                    value: '📱 YouTube Shorts',
+                    inline: true
+                });
+            }
+
+            const messageContent = {
+                embeds: [embed]
+            };
+
+            if (pingMessage) {
+                messageContent.content = pingMessage;
+            }
+
+            await channel.send(messageContent);
+            console.log(`✅ Successfully sent notification for NEW content: ${title}`);
+
+        } catch (error) {
+            console.error('Failed to send notification:', error);
+            
+            try {
+                const channel = this.client.channels.cache.get(notif.discordChannelId);
+                if (channel) {
+                    const isLive = this.isLiveVideo(video);
+                    const isShort = this.isYouTubeShort(video);
+                    const prefix = isLive ? '🔴 LIVE:' : isShort ? '📱 SHORTS:' : '🎬 VIDEO BARU:';
+                    
+                    await channel.send(`${prefix} **${this.sanitizeText(video.title)}**\nhttps://youtu.be/${video.videoId}`);
+                    console.log('✅ Sent fallback notification');
+                }
+            } catch (fallbackError) {
+                console.error('❌ Fallback notification also failed:', fallbackError);
+            }
+        }
+    }
+
+    sanitizeText(text) {
+        if (!text) return '';
+        
+        return text
+            .replace(/[*_`~|\\]/g, '\\$&')
+            .replace(/\n/g, ' ')
+            .trim()
+            .substring(0, 256);
+    }
+
+    getBestThumbnail(video) {
+        if (!video.videoId) return null;
+        
+        if (video.videoThumbnails && video.videoThumbnails.length > 0) {
+            const high = video.videoThumbnails.find(t => t.quality === 'high' || t.quality === 'maxres');
+            const medium = video.videoThumbnails.find(t => t.quality === 'medium');
+            const defaultThumb = video.videoThumbnails[0];
+            
+            const selected = high || medium || defaultThumb;
+            if (selected && selected.url) {
+                return selected.url.startsWith('http') ? selected.url : `https:${selected.url}`;
+            }
+        }
+        
+        return `https://img.youtube.com/vi/${video.videoId}/hqdefault.jpg`;
+    }
+
+    formatDuration(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        
+        if (hours > 0) {
+            return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    addNotification(channelUrl, discordChannelId, options = {}) {
+        const notifications = JSON.parse(fs.readFileSync(this.dataPath, 'utf8'));
+        
+        // Check jika sudah ada notifikasi untuk channel dan discord channel yang sama
+        const existing = notifications.find(n => 
+            n.url === channelUrl && n.discordChannelId === discordChannelId
+        );
+        
+        if (existing) {
+            console.log('Notification already exists for this channel and Discord channel');
+            return existing;
+        }
+        
+        const newNotif = {
+            url: channelUrl,
+            channelId: null,
+            channelName: options.channelName || null,
+            discordChannelId: discordChannelId,
+            lastVideoId: null, // Akan diset pada check pertama tanpa kirim notifikasi
+            lastCheckTime: null,
+            notifyShorts: options.notifyShorts !== false,
+            notifyLive: options.notifyLive !== false,
+            createdAt: new Date().toISOString()
+        };
+        
+        notifications.push(newNotif);
+        this.saveNotifications(notifications);
+        console.log(`Added new notification for: ${channelUrl}`);
+        return newNotif;
+    }
+
+    removeNotification(channelUrl, discordChannelId) {
+        const notifications = JSON.parse(fs.readFileSync(this.dataPath, 'utf8'));
+        const filtered = notifications.filter(n => 
+            !(n.url === channelUrl && n.discordChannelId === discordChannelId)
+        );
+        
+        this.saveNotifications(filtered);
+        return notifications.length - filtered.length;
+    }
+
+    getNotifications() {
+        return JSON.parse(fs.readFileSync(this.dataPath, 'utf8'));
+    }
+}
+
+module.exports = YouTubeNotifier;
