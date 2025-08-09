@@ -6,7 +6,7 @@ module.exports = {
     aliases: ['giveallmoney', 'massadd'],
     adminOnly: true,
     execute(message, args, client) {
-        const ADMIN_ROLE_ID = '1368506120246919218';
+        const ADMIN_ROLE_ID = '136850612023456789246919218';
         
         if (!message.member.roles.cache.has(ADMIN_ROLE_ID)) {
             return message.reply('❌ Command ini cuma buat admin!');
