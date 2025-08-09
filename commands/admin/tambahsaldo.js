@@ -7,7 +7,7 @@ module.exports = {
     adminOnly: true,
     execute(message, args, client) {
         // Definisikan ROLE ID admin disini
-        const ADMIN_ROLE_ID = '1368506120246919218'; // Ganti dengan role ID admin Anda
+        const ADMIN_ROLE_ID = '1368506456789120246919218'; // Ganti dengan role ID admin Anda
         
         // Cek admin hanya berdasarkan role
         if (!message.member.roles.cache.has(ADMIN_ROLE_ID)) {
