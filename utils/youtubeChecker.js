@@ -7,6 +7,7 @@ class YouTubeNotifier {
     constructor(client) {
         this.client = client;
         this.dataPath = path.join(__dirname, '../data/youtube_notifications.json');
+        this.messagesPath = path.join(__dirname, '../data/youtube_messages.json');
         this.checkInterval = 60 * 1000;
         this.start();
     }
@@ -20,6 +21,15 @@ class YouTubeNotifier {
     async initializeDatabase() {
         if (!fs.existsSync(this.dataPath)) {
             fs.writeFileSync(this.dataPath, JSON.stringify([], null, 2));
+        }
+        if (!fs.existsSync(this.messagesPath)) {
+            const defaultMessages = {
+                video: '📹 **{author}** baru upload video:\n**{title}**\n🔗 {url}',
+                short: '⚡ **{author}** baru upload short:\n**{title}**\n🔗 {url}',
+                live: '🔴 **{author}** sedang live:\n**{title}**\n🔗 {url}',
+                upcoming: '⏰ **{author}** akan live:\n**{title}**\n🔗 {url}'
+            };
+            fs.writeFileSync(this.messagesPath, JSON.stringify(defaultMessages, null, 2));
         }
     }
 
@@ -173,22 +183,32 @@ class YouTubeNotifier {
 
         console.log(`Found ${videos.length} videos for channel ${notif.channelId}`);
 
-        // Jika ini pertama kali check channel, set lastVideoId tanpa kirim notifikasi
+        const sortedVideos = videos.sort((a, b) => {
+            const dateA = new Date(a.publishedText || a.publishedAt || 0);
+            const dateB = new Date(b.publishedText || b.publishedAt || 0);
+            return dateB - dateA;
+        });
+
         if (!notif.lastVideoId) {
-            notif.lastVideoId = videos[0].videoId;
+            notif.lastVideoId = sortedVideos[0].videoId;
             notif.lastCheckTime = new Date().toISOString();
             this.saveNotifications(notifications);
-            console.log(`Initial setup - set last video ID to: ${videos[0].videoId} without notification`);
+            console.log(`Initial setup - set last video ID to: ${sortedVideos[0].videoId} without notification`);
             return;
         }
 
-        // Cari video yang lebih baru dari lastVideoId
         const newVideos = [];
-        for (const video of videos) {
+        for (const video of sortedVideos) {
             if (video.videoId === notif.lastVideoId) {
-                break; // Stop ketika mencapai video yang sudah diketahui
+                break;
             }
-            newVideos.push(video);
+            
+            const publishDate = new Date(video.publishedText || video.publishedAt || 0);
+            const lastCheck = new Date(notif.lastCheckTime || 0);
+            
+            if (publishDate > lastCheck) {
+                newVideos.push(video);
+            }
         }
 
         if (newVideos.length === 0) {
@@ -198,59 +218,75 @@ class YouTubeNotifier {
 
         console.log(`Found ${newVideos.length} new videos`);
 
-        // Kirim notifikasi hanya untuk video baru (dalam urutan terbaru ke terlama)
-        for (const video of newVideos.reverse()) { // Reverse agar video lama dikirim dulu
+        for (const video of newVideos.reverse()) {
             if (!video || !video.videoId) {
                 console.log('Skipping invalid video data');
                 continue;
             }
             
-            if (this.shouldNotifyForVideo(video, notif)) {
-                console.log(`Sending notification for NEW video: ${video.title}`);
-                await this.sendNotification(notif, video);
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Delay lebih lama untuk menghindari spam
-            } else {
-                console.log(`Skipping notification for video: ${video.title} (filtered out)`);
-            }
+            console.log(`Sending notification for NEW video: ${video.title}`);
+            await this.sendNotification(notif, video);
+            await new Promise(resolve => setTimeout(resolve, 2000));
         }
 
-        // Update lastVideoId ke video terbaru
-        notif.lastVideoId = videos[0].videoId;
+        notif.lastVideoId = sortedVideos[0].videoId;
         notif.lastCheckTime = new Date().toISOString();
         this.saveNotifications(notifications);
-        console.log(`Updated last video ID to: ${videos[0].videoId}`);
-    }
-
-    shouldNotifyForVideo(video, notif) {
-        const isShort = this.isYouTubeShort(video);
-        const isLive = this.isLiveVideo(video);
-        
-        if (notif.notifyShorts === false && isShort) return false;
-        if (notif.notifyLive === false && isLive) return false;
-        
-        return true;
+        console.log(`Updated last video ID to: ${sortedVideos[0].videoId}`);
     }
 
     isYouTubeShort(video) {
         if (!video) return false;
         
-        const duration = video.lengthSeconds || 0;
+        const duration = parseInt(video.lengthSeconds) || 0;
         const title = (video.title || '').toLowerCase();
         const description = (video.description || '').toLowerCase();
         
-        return duration <= 60 || 
-               title.includes('#shorts') || 
-               description.includes('#shorts') ||
-               video.isShort === true;
+        if (duration > 0 && duration <= 60) {
+            return true;
+        }
+        
+        if (title.includes('#shorts') || title.includes('#short')) {
+            return true;
+        }
+        
+        if (description.includes('#shorts') || description.includes('#short')) {
+            return true;
+        }
+        
+        return false;
     }
 
     isLiveVideo(video) {
         if (!video) return false;
         
-        return video.liveNow === true || 
-               video.isLive === true ||
-               video.lengthSeconds === 0 ||
-               (video.title && video.title.toLowerCase().includes('live'));
+        if (video.liveNow === true || video.isLive === true) {
+            return true;
+        }
+        
+        if (video.lengthSeconds === 0 || !video.lengthSeconds) {
+            const title = (video.title || '').toLowerCase();
+            if (title.includes('live') || title.includes('streaming') || title.includes('🔴')) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    isUpcomingLive(video) {
+        if (!video) return false;
+        
+        if (video.premiereTimestamp || video.scheduledStartTime) {
+            return true;
+        }
+        
+        const title = (video.title || '').toLowerCase();
+        if (title.includes('premiere') || title.includes('akan live') || title.includes('coming live')) {
+            return true;
+        }
+        
+        return false;
     }
 
     async getLatestVideos(channelId) {
@@ -286,8 +322,11 @@ class YouTubeNotifier {
 
         const entries = res.data.match(/<entry>(.*?)<\/entry>/gs) || [];
         const videos = [];
+        const authorMatch = res.data.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/) || 
+                          res.data.match(/<name>(.*?)<\/name>/);
+        const authorName = authorMatch ? authorMatch[1] : 'Unknown';
 
-        for (const entry of entries.slice(0, 5)) {
+        for (const entry of entries.slice(0, 10)) {
             const videoId = entry.match(/<yt:videoId>(.*?)<\/yt:videoId>/)?.[1];
             const titleMatch = entry.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/) || 
                               entry.match(/<title>(.*?)<\/title>/);
@@ -300,10 +339,10 @@ class YouTubeNotifier {
                     videoId: videoId,
                     title: title,
                     publishedText: published,
-                    lengthSeconds: 0,
+                    publishedAt: published,
+                    lengthSeconds: null,
                     description: '',
-                    author: entry.match(/<name><!\[CDATA\[(.*?)\]\]><\/name>/) || 
-                            entry.match(/<name>(.*?)<\/name>/)
+                    author: authorName
                 });
             }
         }
@@ -333,7 +372,7 @@ class YouTubeNotifier {
                 const res = await axios.get(url, { timeout: 8000 });
                 
                 if (endpoint === 'videos') {
-                    return res.data?.slice(0, 5);
+                    return res.data?.slice(0, 10);
                 } else {
                     return res.data?.authorId;
                 }
@@ -349,16 +388,17 @@ class YouTubeNotifier {
             const res = await axios.get(`https://yt.lemnoslife.com/channels/${channelId}/videos`, {
                 timeout: 8000
             });
-            return res.data?.items?.slice(0, 5);
+            return res.data?.items?.slice(0, 10);
         } catch (error) {
-            const res = await axios.get(`https://yt.lemnoslife.com/noKey/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=5`, {
+            const res = await axios.get(`https://yt.lemnoslife.com/noKey/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=10`, {
                 timeout: 8000
             });
             return res.data?.items?.map(item => ({
                 videoId: item.id?.videoId,
                 title: item.snippet?.title,
                 description: item.snippet?.description,
-                publishedText: item.snippet?.publishedAt
+                publishedText: item.snippet?.publishedAt,
+                publishedAt: item.snippet?.publishedAt
             }));
         }
     }
@@ -375,14 +415,16 @@ class YouTubeNotifier {
         const videos = [];
 
         for (const match of videoMatches) {
-            if (videos.length >= 5) break;
+            if (videos.length >= 10) break;
             
             const [, videoId, title, duration] = match;
             videos.push({
                 videoId: videoId,
                 title: title,
                 lengthSeconds: this.parseDuration(duration),
-                description: ''
+                description: '',
+                publishedText: new Date().toISOString(),
+                publishedAt: new Date().toISOString()
             });
         }
 
@@ -390,7 +432,7 @@ class YouTubeNotifier {
     }
 
     parseDuration(durationStr) {
-        if (!durationStr) return 0;
+        if (!durationStr) return null;
         
         const parts = durationStr.split(':').reverse();
         let seconds = 0;
@@ -415,68 +457,85 @@ class YouTubeNotifier {
                 return;
             }
 
+            const messages = this.loadCustomMessages();
             const isShort = this.isYouTubeShort(video);
             const isLive = this.isLiveVideo(video);
+            const isUpcoming = this.isUpcomingLive(video);
             
-            let videoType = '📹 Video Baru';
-            let color = '#FF0000';
-            let pingMessage = '';
+            let messageType, messageTemplate, color, pingMessage;
             
-            if (isLive) {
-                videoType = '🔴 LIVE SEKARANG';
+            if (isUpcoming) {
+                messageType = 'upcoming';
+                messageTemplate = messages.upcoming;
+                color = '#FFA500';
+                pingMessage = '⏰ **LIVE AKAN DIMULAI!**';
+            } else if (isLive) {
+                messageType = 'live';
+                messageTemplate = messages.live;
                 color = '#FF0000';
-                pingMessage = '**🔴 LIVE STREAM DIMULAI!**';
+                pingMessage = '🔴 **LIVE SEKARANG!**';
             } else if (isShort) {
-                videoType = '📱 YouTube Shorts Baru';
+                messageType = 'short';
+                messageTemplate = messages.short;
                 color = '#FF6B6B';
+            } else {
+                messageType = 'video';
+                messageTemplate = messages.video;
+                color = '#FF0000';
             }
 
-            const title = this.sanitizeText(video.title);
-            const description = video.description ? 
-                this.sanitizeText(video.description.substring(0, 200)) + '...' : 
-                'Tidak ada deskripsi';
+            const videoUrl = `https://youtu.be/${video.videoId}`;
+            const author = video.author || 'YouTube Channel';
+            
+            if (notif.useEmbed) {
+                const title = this.sanitizeText(video.title);
+                const description = video.description ? 
+                    this.sanitizeText(video.description.substring(0, 200)) + '...' : 
+                    'Tidak ada deskripsi';
 
-            const embed = new EmbedBuilder()
-                .setTitle(`${videoType}`)
-                .setURL(`https://youtu.be/${video.videoId}`)
-                .setDescription(`**${title}**\n\n${description}`)
-                .setThumbnail(this.getBestThumbnail(video))
-                .setColor(color)
-                .setFooter({ text: `Channel: ${notif.channelName || 'YouTube'} • Baru saja` })
-                .setTimestamp();
+                const embed = new EmbedBuilder()
+                    .setTitle(title)
+                    .setURL(videoUrl)
+                    .setDescription(description)
+                    .setThumbnail(this.getBestThumbnail(video))
+                    .setColor(color)
+                    .setFooter({ text: `${author} • ${this.getTypeLabel(messageType)}` })
+                    .setTimestamp();
 
-            if (video.lengthSeconds && video.lengthSeconds > 0) {
-                embed.addFields({
-                    name: 'Durasi',
-                    value: this.formatDuration(video.lengthSeconds),
-                    inline: true
-                });
-            }
+                if (video.lengthSeconds && video.lengthSeconds > 0) {
+                    embed.addFields({
+                        name: 'Durasi',
+                        value: this.formatDuration(video.lengthSeconds),
+                        inline: true
+                    });
+                }
 
-            if (isLive) {
-                embed.addFields({
-                    name: 'Status',
-                    value: '🔴 SEDANG LIVE',
-                    inline: true
-                });
-            } else if (isShort) {
                 embed.addFields({
                     name: 'Tipe',
-                    value: '📱 YouTube Shorts',
+                    value: this.getTypeLabel(messageType),
                     inline: true
                 });
+
+                const messageContent = {
+                    embeds: [embed]
+                };
+
+                if (pingMessage) {
+                    messageContent.content = pingMessage;
+                }
+
+                await channel.send(messageContent);
+            } else {
+                const customMessage = messageTemplate
+                    .replace(/{title}/g, video.title)
+                    .replace(/{author}/g, author)
+                    .replace(/{url}/g, videoUrl)
+                    .replace(/{type}/g, messageType);
+
+                await channel.send(customMessage);
             }
 
-            const messageContent = {
-                embeds: [embed]
-            };
-
-            if (pingMessage) {
-                messageContent.content = pingMessage;
-            }
-
-            await channel.send(messageContent);
-            console.log(`✅ Successfully sent notification for NEW content: ${title}`);
+            console.log(`✅ Successfully sent notification for NEW ${messageType}: ${video.title}`);
 
         } catch (error) {
             console.error('Failed to send notification:', error);
@@ -486,7 +545,18 @@ class YouTubeNotifier {
                 if (channel) {
                     const isLive = this.isLiveVideo(video);
                     const isShort = this.isYouTubeShort(video);
-                    const prefix = isLive ? '🔴 LIVE:' : isShort ? '📱 SHORTS:' : '🎬 VIDEO BARU:';
+                    const isUpcoming = this.isUpcomingLive(video);
+                    
+                    let prefix;
+                    if (isUpcoming) {
+                        prefix = '⏰ UPCOMING LIVE:';
+                    } else if (isLive) {
+                        prefix = '🔴 LIVE:';
+                    } else if (isShort) {
+                        prefix = '📱 SHORTS:';
+                    } else {
+                        prefix = '🎬 VIDEO BARU:';
+                    }
                     
                     await channel.send(`${prefix} **${this.sanitizeText(video.title)}**\nhttps://youtu.be/${video.videoId}`);
                     console.log('✅ Sent fallback notification');
@@ -495,6 +565,29 @@ class YouTubeNotifier {
                 console.error('❌ Fallback notification also failed:', fallbackError);
             }
         }
+    }
+
+    loadCustomMessages() {
+        try {
+            return JSON.parse(fs.readFileSync(this.messagesPath, 'utf8'));
+        } catch (error) {
+            return {
+                video: '📹 **{author}** baru upload video:\n**{title}**\n🔗 {url}',
+                short: '⚡ **{author}** baru upload short:\n**{title}**\n🔗 {url}',
+                live: '🔴 **{author}** sedang live:\n**{title}**\n🔗 {url}',
+                upcoming: '⏰ **{author}** akan live:\n**{title}**\n🔗 {url}'
+            };
+        }
+    }
+
+    getTypeLabel(type) {
+        const labels = {
+            video: '🎬 Video',
+            short: '📱 YouTube Shorts',
+            live: '🔴 Live Stream',
+            upcoming: '⏰ Upcoming Live'
+        };
+        return labels[type] || '📹 Content';
     }
 
     sanitizeText(text) {
@@ -525,6 +618,8 @@ class YouTubeNotifier {
     }
 
     formatDuration(seconds) {
+        if (!seconds || seconds === 0) return 'N/A';
+        
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
@@ -538,7 +633,6 @@ class YouTubeNotifier {
     addNotification(channelUrl, discordChannelId, options = {}) {
         const notifications = JSON.parse(fs.readFileSync(this.dataPath, 'utf8'));
         
-        // Check jika sudah ada notifikasi untuk channel dan discord channel yang sama
         const existing = notifications.find(n => 
             n.url === channelUrl && n.discordChannelId === discordChannelId
         );
@@ -553,10 +647,9 @@ class YouTubeNotifier {
             channelId: null,
             channelName: options.channelName || null,
             discordChannelId: discordChannelId,
-            lastVideoId: null, // Akan diset pada check pertama tanpa kirim notifikasi
+            useEmbed: options.useEmbed || false,
+            lastVideoId: null,
             lastCheckTime: null,
-            notifyShorts: options.notifyShorts !== false,
-            notifyLive: options.notifyLive !== false,
             createdAt: new Date().toISOString()
         };
         
