@@ -3,7 +3,7 @@
   "goodbyeChannel": "1348736324353392681",
   "registerChannel": "1336337929311752224",
   "registerRole": "1336070451910414378",
-  "antiLink": false,
+  "antiLink": true,
   "allowedLinks": [],
   "gameRoles": [
     {
