@@ -15,6 +15,6 @@
       "members": "1404287153827217511",
       "bots": "1404287155794346106"
     },
-    "autoRestart": false
+    "autoRestart": true
   }
 }
