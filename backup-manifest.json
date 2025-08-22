@@ -1,79 +1,99 @@
 {
-  "timestamp": "2025-07-30T15:19:39.986Z",
-  "backupCount": 821,
-  "totalFiles": 12,
+  "timestamp": "2025-08-22T06:09:49.018Z",
+  "backupCount": 2552,
+  "totalFiles": 16,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v21.7.3",
-    "uptime": 98418.939167179,
+    "uptime": 308800.981277795,
     "memoryUsage": {
-      "rss": 104271872,
-      "heapTotal": 43028480,
-      "heapUsed": 38853664,
-      "external": 4568076,
-      "arrayBuffers": 2974066
+      "rss": 125952000,
+      "heapTotal": 42471424,
+      "heapUsed": 33877200,
+      "external": 4029515,
+      "arrayBuffers": 494060
     }
   },
   "files": [
     {
+      "path": "README.md",
+      "size": 6,
+      "modified": "2025-08-15T10:27:42.000Z"
+    },
+    {
+      "path": "backup-manifest.json",
+      "size": 1821,
+      "modified": "2025-08-15T10:27:42.000Z"
+    },
+    {
       "path": "data/1162382486031061015.json",
       "size": 918,
-      "modified": "2025-07-25T17:49:27.923Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1246508676181921872.json",
-      "size": 1473,
-      "modified": "2025-07-28T16:54:06.494Z"
+      "size": 1367,
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1261408115182538822.json",
       "size": 425,
-      "modified": "2025-06-26T00:58:56.000Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1340412116720418846.json",
       "size": 425,
-      "modified": "2025-06-26T00:58:56.000Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1340412120625446952.json",
-      "size": 2326,
-      "modified": "2025-07-28T07:38:30.894Z"
+      "size": 2327,
+      "modified": "2025-08-17T09:58:30.198Z"
     },
     {
       "path": "data/anosae.json",
       "size": 22,
-      "modified": "2025-07-26T15:23:37.993Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/daily_messages.json",
       "size": 2,
-      "modified": "2025-07-30T00:00:26.514Z"
+      "modified": "2025-08-22T00:00:22.560Z"
     },
     {
       "path": "data/database.json",
-      "size": 6642,
-      "modified": "2025-07-29T17:26:56.715Z"
+      "size": 6723,
+      "modified": "2025-08-16T13:15:26.652Z"
     },
     {
       "path": "data/inviteRoles_1246508676181921872.json",
       "size": 166,
-      "modified": "2025-07-26T14:26:24.157Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/serverstats.json",
       "size": 470,
-      "modified": "2025-07-26T09:33:37.981Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/voicesetup.json",
       "size": 190,
-      "modified": "2025-07-30T13:29:22.687Z"
+      "modified": "2025-08-21T19:35:48.810Z"
     },
     {
       "path": "data/warnings.json",
       "size": 233,
-      "modified": "2025-07-05T17:04:42.000Z"
+      "modified": "2025-08-15T10:27:42.000Z"
+    },
+    {
+      "path": "data/youtube_messages.json",
+      "size": 262,
+      "modified": "2025-08-15T10:27:42.000Z"
+    },
+    {
+      "path": "data/youtube_notifications.json",
+      "size": 754,
+      "modified": "2025-08-18T21:28:21.494Z"
     }
   ]
 }
