@@ -2,7 +2,7 @@ const https = require('https');
 const http = require('http');
 
 const GITHUB_TOKEN = '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';
-const CODESPACE_NAME = 'https://fantastic-spoon-4jvq9xrw46wqcj77r.github.dev/';
+const CODESPACE_NAME = 'fantastic-spoon-4jvq9xrw46wqcj77r.github.dev/';
 const OWNER = 'anos-rgb';
 const PING_INTERVAL = 5 * 60 * 1000;
 
