@@ -1,17 +1,17 @@
 {
-  "timestamp": "2025-09-18T22:09:36.624Z",
-  "backupCount": 22,
+  "timestamp": "2025-09-18T22:09:43.997Z",
+  "backupCount": 1,
   "totalFiles": 31,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v22.17.0",
-    "uptime": 2558.417002102,
+    "uptime": 44.475255569,
     "memoryUsage": {
-      "rss": 137314304,
-      "heapTotal": 39628800,
-      "heapUsed": 31553688,
-      "external": 9015525,
-      "arrayBuffers": 2905056
+      "rss": 124272640,
+      "heapTotal": 39890944,
+      "heapUsed": 35825256,
+      "external": 9208243,
+      "arrayBuffers": 2887650
     }
   },
   "files": [
@@ -28,7 +28,7 @@
     {
       "path": "anos.js",
       "size": 6270,
-      "modified": "2025-09-18T22:09:32.796Z"
+      "modified": "2025-09-18T22:09:42.817Z"
     },
     {
       "path": "backup-manifest.json",
