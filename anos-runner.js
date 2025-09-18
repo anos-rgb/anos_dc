@@ -17,9 +17,9 @@ class AnosAutoRunner {
 
     init() {
         this.log('Anos Auto Runner started');
-        setTimeout(() => {
+        this.randomDelay(() => {
             this.checkAndRun();
-        }, Math.floor(Math.random() * 4000) + 1000);
+        });
     }
 
     randomDelay(callback) {
@@ -208,16 +208,16 @@ class AnosAutoRunner {
 
         this.currentProcess.on('close', (code) => {
             this.log(`Anos process exited with code ${code}`);
-            setTimeout(() => {
+            this.randomDelay(() => {
                 this.checkAndRun();
-            }, Math.floor(Math.random() * 4000) + 1000);
+            });
         });
 
         this.currentProcess.on('error', (error) => {
             this.log(`Anos process error: ${error.message}`);
-            setTimeout(() => {
+            this.randomDelay(() => {
                 this.checkAndRun();
-            }, Math.floor(Math.random() * 4000) + 1000);
+            });
         });
     }
 
@@ -269,14 +269,16 @@ class AnosAutoRunner {
             }
 
             setTimeout(() => {
-                this.checkAndRun();
+                this.randomDelay(() => {
+                    this.checkAndRun();
+                });
             }, 25 * 60 * 1000);
 
         } catch (error) {
             this.log(`Error in checkAndRun: ${error.message}`);
-            setTimeout(() => {
+            this.randomDelay(() => {
                 this.checkAndRun();
-            }, Math.floor(Math.random() * 4000) + 1000);
+            });
         }
     }
 
