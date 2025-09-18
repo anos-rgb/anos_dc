@@ -4,7 +4,7 @@ const http = require('http');
 const GITHUB_TOKEN = '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';
 const CODESPACE_NAME = 'fantastic-spoon-4jvq9xrw46wqcj77r';
 const OWNER = 'anos-rgb';
-const PING_INTERVAL = 10 * 1000;
+const PING_INTERVAL = 1 * 1000;
 
 class AnosKeepAlive {
     constructor() {
