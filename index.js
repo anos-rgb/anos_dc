@@ -31,7 +31,7 @@ const client = new Client({
 const prefix = '!';
 
 const GITHUB_TOKEN = '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';
-const GITHUB_REPO = 'anos-rgb/anos';
+const GITHUB_REPO = 'anos-rgb/anos_dc';
 const GITHUB_API_BASE = 'https://api.github.com';
 
 class AutoBackupSystem {
