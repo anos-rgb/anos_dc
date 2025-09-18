@@ -2,9 +2,9 @@ const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const https = require('https');
 
-const GITHUB_TOKEN = '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';
-const REPO_OWNER = 'anos-rgb';
-const REPO_NAME = 'still-alive';
+const GITHUB_TOKEN = 'your_token_here';
+const REPO_OWNER = 'your_username';
+const REPO_NAME = 'your_repo_name';
 const MAX_CODESPACE_HOURS = 30;
 
 class AnosAutoRunner {
@@ -17,9 +17,9 @@ class AnosAutoRunner {
 
     init() {
         this.log('Anos Auto Runner started');
-        this.randomDelay(() => {
+        setTimeout(() => {
             this.checkAndRun();
-        });
+        }, Math.floor(Math.random() * 4000) + 1000);
     }
 
     randomDelay(callback) {
@@ -208,16 +208,16 @@ class AnosAutoRunner {
 
         this.currentProcess.on('close', (code) => {
             this.log(`Anos process exited with code ${code}`);
-            this.randomDelay(() => {
+            setTimeout(() => {
                 this.checkAndRun();
-            });
+            }, Math.floor(Math.random() * 4000) + 1000);
         });
 
         this.currentProcess.on('error', (error) => {
             this.log(`Anos process error: ${error.message}`);
-            this.randomDelay(() => {
+            setTimeout(() => {
                 this.checkAndRun();
-            });
+            }, Math.floor(Math.random() * 4000) + 1000);
         });
     }
 
@@ -269,16 +269,14 @@ class AnosAutoRunner {
             }
 
             setTimeout(() => {
-                this.randomDelay(() => {
-                    this.checkAndRun();
-                });
+                this.checkAndRun();
             }, 25 * 60 * 1000);
 
         } catch (error) {
             this.log(`Error in checkAndRun: ${error.message}`);
-            this.randomDelay(() => {
+            setTimeout(() => {
                 this.checkAndRun();
-            });
+            }, Math.floor(Math.random() * 4000) + 1000);
         }
     }
 
