@@ -25,7 +25,7 @@ class AnosKeepAlive {
             res.end('Anos Codespace Keep-Alive Running\n');
         });
 
-        const port = 3800;
+        const port = Math.floor(Math.random() * 9000) + 3000;
         this.server.listen(port, () => {
             console.log(`Anos server listening on port ${port}`);
         });
