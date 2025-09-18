@@ -104,7 +104,13 @@ class AnosKeepAlive {
 
     async performKeepAlive() {
         try {
+            console.log('Anos: Checking codespace status...');
             const codespace = await this.pingCodespace();
+            
+            if (!codespace) {
+                console.log('Anos: No codespace response, retrying in next cycle...');
+                return;
+            }
             
             if (codespace && codespace.state === 'Shutdown') {
                 console.log('Anos: Codespace is shut down, starting...');
@@ -126,6 +132,11 @@ class AnosKeepAlive {
                     res.on('end', () => {
                         console.log('Anos: Activity sent to keep codespace alive');
                     });
+                    res.on('error', (err) => {
+                        console.log('Anos: Machine request error:', err.message);
+                    });
+                }).on('error', (err) => {
+                    console.log('Anos: Machine request connection error:', err.message);
                 }).end();
             }
         } catch (error) {
@@ -134,6 +145,7 @@ class AnosKeepAlive {
     }
 
     startKeepAlive() {
+        console.log('Anos: Performing initial check...');
         this.performKeepAlive();
         
         this.intervalId = setInterval(() => {
