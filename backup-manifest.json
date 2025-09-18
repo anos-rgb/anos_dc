@@ -1,174 +1,99 @@
 {
-  "timestamp": "2025-09-18T20:39:25.002Z",
-  "backupCount": 1,
-  "totalFiles": 31,
+  "timestamp": "2025-09-04T14:38:37.048Z",
+  "backupCount": 281,
+  "totalFiles": 16,
   "serverInfo": {
     "platform": "linux",
-    "nodeVersion": "v22.17.0",
-    "uptime": 44.215169125,
+    "nodeVersion": "v21.7.3",
+    "uptime": 33634.064586671,
     "memoryUsage": {
-      "rss": 122511360,
-      "heapTotal": 40026112,
-      "heapUsed": 35623768,
-      "external": 14911703,
-      "arrayBuffers": 6831282
+      "rss": 120238080,
+      "heapTotal": 39510016,
+      "heapUsed": 34737264,
+      "external": 5315068,
+      "arrayBuffers": 1779613
     }
   },
   "files": [
     {
-      "path": ".vscode/settings.json",
-      "size": 38,
-      "modified": "2025-09-18T18:37:12.510Z"
-    },
-    {
-      "path": "anos-runner.js",
-      "size": 12695,
-      "modified": "2025-09-18T20:38:23.092Z"
-    },
-    {
-      "path": "anos.js",
-      "size": 5697,
-      "modified": "2025-09-18T20:36:49.213Z"
+      "path": "README.md",
+      "size": 6,
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "backup-manifest.json",
-      "size": 2286,
-      "modified": "2025-09-18T16:53:17.393Z"
+      "size": 1821,
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1162382486031061015.json",
       "size": 918,
-      "modified": "2025-09-18T16:53:17.407Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1246508676181921872.json",
       "size": 1367,
-      "modified": "2025-09-18T16:53:17.407Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1261408115182538822.json",
       "size": 425,
-      "modified": "2025-09-18T16:53:17.407Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1340412116720418846.json",
       "size": 425,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/1340412120625446952.json",
       "size": 2327,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-08-17T09:58:30.198Z"
     },
     {
       "path": "data/anosae.json",
       "size": 22,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/daily_messages.json",
       "size": 2,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-09-04T00:00:53.318Z"
     },
     {
       "path": "data/database.json",
       "size": 7170,
-      "modified": "2025-09-18T17:42:57.840Z"
+      "modified": "2025-09-01T06:42:21.046Z"
     },
     {
       "path": "data/inviteRoles_1246508676181921872.json",
       "size": 166,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/serverstats.json",
       "size": 470,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/voicesetup.json",
       "size": 190,
-      "modified": "2025-09-18T20:38:05.630Z"
+      "modified": "2025-09-03T09:16:12.429Z"
     },
     {
       "path": "data/warnings.json",
       "size": 233,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/youtube_messages.json",
       "size": 262,
-      "modified": "2025-09-18T16:53:17.408Z"
+      "modified": "2025-08-15T10:27:42.000Z"
     },
     {
       "path": "data/youtube_notifications.json",
       "size": 754,
-      "modified": "2025-09-18T16:53:17.408Z"
-    },
-    {
-      "path": "events/dailyUpdate.js",
-      "size": 4288,
-      "modified": "2025-09-18T16:53:17.408Z"
-    },
-    {
-      "path": "events/guildMemberAdd.js",
-      "size": 7784,
-      "modified": "2025-09-18T16:53:17.408Z"
-    },
-    {
-      "path": "events/guildMemberRemove.js",
-      "size": 2968,
-      "modified": "2025-09-18T16:53:17.408Z"
-    },
-    {
-      "path": "events/interactionCreate.js",
-      "size": 4510,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "events/memberStatsUpdate.js",
-      "size": 2268,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "events/messageCreate.js",
-      "size": 10633,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "events/messageDelete.js",
-      "size": 1155,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "events/messageReactionAdd.js",
-      "size": 1061,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "events/messageReactionRemove.js",
-      "size": 1066,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "events/ready.js",
-      "size": 4737,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "events/voicehandler.js",
-      "size": 9207,
-      "modified": "2025-09-18T16:53:17.409Z"
-    },
-    {
-      "path": "media/Goodbye.gif",
-      "size": 1473520,
-      "modified": "2025-09-18T16:53:17.415Z"
-    },
-    {
-      "path": "media/Welcome.gif",
-      "size": 1941445,
-      "modified": "2025-09-18T16:53:17.423Z"
+      "modified": "2025-08-18T21:28:21.494Z"
     }
   ]
 }
