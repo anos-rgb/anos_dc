@@ -4,10 +4,10 @@ const os = require('os');
 
 const CONFIG = {
   discord: "https://discord.gg/y8jYv2ZgJ7",
-  github: "https://github.com/your-username",
+  github: "https://github.com/anos-rgb",
   createInterval: 3000,
   deleteInterval: 10000,
-  filePrefix: 'keepalive_',
+  filePrefix: 'anos_',
   fileExtension: '.txt'
 };
 
