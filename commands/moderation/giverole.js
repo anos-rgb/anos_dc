@@ -4,7 +4,7 @@ const path = require('path');
 const inviteRoleData = new Map();
 
 function saveInviteData(guildId, data) {
-  const dataPath = path.join(__dirname, '..', 'data', `inviteRoles_${guildId}.json`);
+  const dataPath = path.join(__dirname, '..', '..', 'data', `inviteRoles_${guildId}.json`);
   const dir = path.dirname(dataPath);
   
   if (!fs.existsSync(dir)) {
