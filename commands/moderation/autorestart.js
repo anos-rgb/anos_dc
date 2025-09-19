@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { PermissionFlagsBits } = require('discord.js');
 
-const statsDataPath = path.join(__dirname, '..', 'data', 'serverstats.json');
+const statsDataPath = path.join(__dirname, '..', '..', 'data', 'serverstats.json');
 
 module.exports = {
   name: 'autorestart',
