@@ -1,182 +1,128 @@
-const https = require('https');
-const http = require('http');
+const fs = require('fs');
+const path = require('path');
+const { Octokit } = require('@octokit/rest');
 
-const GITHUB_TOKEN = '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';
-const CODESPACE_NAME = 'fantastic-spoon-4jvq9xrw46wqcj77r';
-const OWNER = 'anos-rgb';
-const PING_INTERVAL = 5 * 1000;
+const CODESPACES_URL = 'YOUR_CODESPACES_URL_HERE';
+const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE';
+const REPO_OWNER = 'YOUR_USERNAME';
+const REPO_NAME = 'YOUR_REPO_NAME';
+
+const octokit = new Octokit({
+    auth: GITHUB_TOKEN
+});
 
 class AnosKeepAlive {
     constructor() {
-        this.server = null;
-        this.intervalId = null;
-        this.init();
+        this.isRunning = false;
+        this.interval = null;
+        this.fileCounter = 0;
     }
 
-    init() {
-        this.startServer();
-        this.startKeepAlive();
-        this.setupGracefulShutdown();
-    }
-
-    startServer() {
-        this.server = http.createServer((req, res) => {
-            res.writeHead(200, { 'Content-Type': 'text/plain' });
-            res.end('Anos Codespace Keep-Alive Running\n');
-        });
-
-        const port = Math.floor(Math.random() * 9000) + 3000;
-        this.server.listen(port, () => {
-            console.log(`Anos server listening on port ${port}`);
-        });
-    }
-
-    async pingCodespace() {
+    async createRandomFile() {
+        const timestamp = Date.now();
+        const randomId = Math.random().toString(36).substring(2, 15);
+        const fileName = `anos_${timestamp}_${randomId}.txt`;
+        const content = `Anos keepalive file created at ${new Date().toISOString()}\nCounter: ${this.fileCounter++}\nRandom: ${Math.random()}`;
+        
         try {
-            const options = {
-                hostname: 'api.github.com',
-                path: `/user/codespaces/${CODESPACE_NAME}`,
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'User-Agent': 'Anos-KeepAlive/1.0'
-                }
-            };
-
-            return new Promise((resolve, reject) => {
-                const req = https.request(options, (res) => {
-                    let data = '';
-                    res.on('data', chunk => data += chunk);
-                    res.on('end', () => {
-                        if (res.statusCode === 200) {
-                            const codespace = JSON.parse(data);
-                            console.log(`Anos ping: ${codespace.name} - ${codespace.state}`);
-                            resolve(codespace);
-                        } else {
-                            reject(new Error(`API Error: ${res.statusCode} - ${data}`));
-                        }
-                    });
-                });
-
-                req.on('error', reject);
-                req.end();
+            await octokit.repos.createOrUpdateFileContents({
+                owner: REPO_OWNER,
+                repo: REPO_NAME,
+                path: `keepalive/${fileName}`,
+                message: `Anos auto commit ${timestamp}`,
+                content: Buffer.from(content).toString('base64'),
             });
+            console.log(`Anos file created: ${fileName}`);
+        } catch (error) {
+            console.error('Anos error creating file:', error.message);
+        }
+    }
+
+    async deleteOldFiles() {
+        try {
+            const { data } = await octokit.repos.getContent({
+                owner: REPO_OWNER,
+                repo: REPO_NAME,
+                path: 'keepalive'
+            });
+
+            if (Array.isArray(data) && data.length > 10) {
+                const oldestFile = data[0];
+                await octokit.repos.deleteFile({
+                    owner: REPO_OWNER,
+                    repo: REPO_NAME,
+                    path: oldestFile.path,
+                    message: `Anos auto cleanup ${oldestFile.name}`,
+                    sha: oldestFile.sha
+                });
+                console.log(`Anos cleaned up: ${oldestFile.name}`);
+            }
+        } catch (error) {
+            console.error('Anos cleanup error:', error.message);
+        }
+    }
+
+    async makeHttpRequest() {
+        try {
+            const response = await fetch(CODESPACES_URL);
+            console.log(`Anos ping status: ${response.status}`);
         } catch (error) {
             console.error('Anos ping error:', error.message);
         }
     }
 
-    async startCodespace() {
-        try {
-            const options = {
-                hostname: 'api.github.com',
-                path: `/user/codespaces/${CODESPACE_NAME}/start`,
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'User-Agent': 'Anos-KeepAlive/1.0'
-                }
-            };
-
-            return new Promise((resolve, reject) => {
-                const req = https.request(options, (res) => {
-                    let data = '';
-                    res.on('data', chunk => data += chunk);
-                    res.on('end', () => {
-                        if (res.statusCode === 202) {
-                            console.log('Anos: Codespace starting...');
-                            resolve(true);
-                        } else {
-                            reject(new Error(`Start Error: ${res.statusCode} - ${data}`));
-                        }
-                    });
-                });
-
-                req.on('error', reject);
-                req.end();
-            });
-        } catch (error) {
-            console.error('Anos start error:', error.message);
-        }
-    }
-
     async performKeepAlive() {
-        try {
-            console.log('Anos: Checking codespace status...');
-            const codespace = await this.pingCodespace();
-            
-            if (!codespace) {
-                console.log('Anos: No codespace response, retrying in next cycle...');
-                return;
-            }
-            
-            if (codespace && codespace.state === 'Shutdown') {
-                console.log('Anos: Codespace is shut down, starting...');
-                await this.startCodespace();
-            } else if (codespace && codespace.state === 'Available') {
-                const machineRequest = {
-                    hostname: 'api.github.com',
-                    path: `/user/codespaces/${CODESPACE_NAME}/machines`,
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'User-Agent': 'Anos-KeepAlive/1.0'
-                    }
-                };
-
-                https.request(machineRequest, (res) => {
-                    res.on('data', () => {});
-                    res.on('end', () => {
-                        console.log('Anos: Activity sent to keep codespace alive');
-                    });
-                    res.on('error', (err) => {
-                        console.log('Anos: Machine request error:', err.message);
-                    });
-                }).on('error', (err) => {
-                    console.log('Anos: Machine request connection error:', err.message);
-                }).end();
-            }
-        } catch (error) {
-            console.error('Anos keep-alive error:', error.message);
+        console.log(`Anos keepalive cycle: ${new Date().toISOString()}`);
+        
+        await this.createRandomFile();
+        await this.makeHttpRequest();
+        
+        if (Math.random() > 0.7) {
+            await this.deleteOldFiles();
         }
     }
 
-    startKeepAlive() {
-        console.log('Anos: Performing initial check...');
+    start() {
+        if (this.isRunning) return;
+        
+        this.isRunning = true;
+        console.log('Anos keepalive started');
+        
         this.performKeepAlive();
         
-        this.intervalId = setInterval(() => {
+        this.interval = setInterval(() => {
             this.performKeepAlive();
-        }, PING_INTERVAL);
-
-        console.log(`Anos keep-alive started with ${PING_INTERVAL / 1000}s interval`);
+        }, 5 * 60 * 1000);
     }
 
-    setupGracefulShutdown() {
-        const shutdown = () => {
-            console.log('Anos: Shutting down gracefully...');
-            
-            if (this.intervalId) {
-                clearInterval(this.intervalId);
-            }
-            
-            if (this.server) {
-                this.server.close(() => {
-                    console.log('Anos: Server closed');
-                    process.exit(0);
-                });
-            } else {
-                process.exit(0);
-            }
-        };
-
-        process.on('SIGTERM', shutdown);
-        process.on('SIGINT', shutdown);
-        process.on('SIGQUIT', shutdown);
+    stop() {
+        if (!this.isRunning) return;
+        
+        this.isRunning = false;
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = null;
+        }
+        console.log('Anos keepalive stopped');
     }
 }
 
-new AnosKeepAlive();
+const anos = new AnosKeepAlive();
+
+process.on('SIGINT', () => {
+    console.log('\nReceived SIGINT, shutting down Anos...');
+    anos.stop();
+    process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+    console.log('\nReceived SIGTERM, shutting down Anos...');
+    anos.stop();
+    process.exit(0);
+});
+
+anos.start();
+
+setInterval(() => {
+    console.log(`Anos heartbeat: ${new Date().toISOString()}`);
+}, 30 * 1000);
