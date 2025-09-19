@@ -2,10 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const { Octokit } = require('@octokit/rest');
 
-const CODESPACES_URL = 'YOUR_CODESPACES_URL_HERE';
-const GITHUB_TOKEN = 'YOUR_GITHUB_TOKEN_HERE';
-const REPO_OWNER = 'YOUR_USERNAME';
-const REPO_NAME = 'YOUR_REPO_NAME';
+const CODESPACES_URL = 'https://fantastic-spoon-4jvq9xrw46wqcj77r.github.dev/';
+const GITHUB_TOKEN = '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';
+const REPO_OWNER = 'anos-rgb';
+const REPO_NAME = 'still-alive';
 
 const octokit = new Octokit({
     auth: GITHUB_TOKEN
