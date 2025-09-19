@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 function getGuildData(guildId) {
-    const filePath = path.join(__dirname, '..', 'data', `${guildId}.json`);
+    const filePath = path.join(__dirname, '..', '..', 'data', `${guildId}.json`);
     if (fs.existsSync(filePath)) {
         return JSON.parse(fs.readFileSync(filePath, 'utf8'));
     }
