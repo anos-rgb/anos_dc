@@ -2,8 +2,8 @@ const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const https = require('https');
 
-const GITHUB_TOKEN = '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';
-const REPO_OWNER = 'anos-rgb';
+
+
 
 const MAX_CODESPACE_HOURS = 30;
 
