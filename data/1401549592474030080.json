@@ -1,0 +1,20 @@
+{
+  "welcomeChannel": null,
+  "welcomech": null,
+  "goodbyeChannel": null,
+  "goodbyech": null,
+  "registerChannel": null,
+  "registerRole": null,
+  "antiLink": false,
+  "allowedLinks": [],
+  "gameRoles": [],
+  "gameRoleChannel": null,
+  "randomRoles": [],
+  "randomRoleMenus": [],
+  "adminRole": null,
+  "nameRequests": {},
+  "deleteLogChannel": null,
+  "reactRoles": {},
+  "welcomeMessage": null,
+  "goodbyeMessage": null
+}
