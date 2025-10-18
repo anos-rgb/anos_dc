@@ -9,7 +9,9 @@ function getGuildData(guildId) {
     }
     return {
         welcomeChannel: null,
+        welcomech: null,
         goodbyeChannel: null,
+        goodbyech: null,
         registerChannel: null,
         registerRole: null,
         antiLink: false,
@@ -28,7 +30,7 @@ function getGuildData(guildId) {
 }
 
 function saveGuildData(guildId, data) {
-    const dirPath = path.join(__dirname, '..', 'data');
+    const dirPath = path.join(__dirname, '..', '..', 'data');
     if (!fs.existsSync(dirPath)) {
         fs.mkdirSync(dirPath, { recursive: true });
     }
@@ -41,7 +43,6 @@ module.exports = {
     description: 'Setup sistem reaction role',
     usage: '!reactrole <#channel> <@role> [pesan]',
     permissions: [PermissionFlagsBits.ManageRoles],
-
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionFlagsBits.ManageRoles)) {
             return message.reply('❌ Anda tidak memiliki permission untuk menggunakan command ini!');
@@ -91,6 +92,7 @@ module.exports = {
             await sentMessage.react('✅');
 
             const guildData = getGuildData(message.guild.id);
+            
             if (!guildData.reactRoles) {
                 guildData.reactRoles = {};
             }
