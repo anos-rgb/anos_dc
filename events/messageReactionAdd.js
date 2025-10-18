@@ -1,3 +1,4 @@
+const { Events } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -10,24 +11,47 @@ function getGuildData(guildId) {
 }
 
 module.exports = {
-    name: 'messageReactionAdd',
-    execute(reaction, user) {
+    name: Events.MessageReactionAdd,
+    async execute(reaction, user) {
         if (user.bot) return;
+
+        if (reaction.partial) {
+            try {
+                await reaction.fetch();
+            } catch (error) {
+                console.error('Error fetching reaction:', error);
+                return;
+            }
+        }
 
         const guildData = getGuildData(reaction.message.guild.id);
         if (!guildData || !guildData.reactRoles) return;
-        
-        const messageData = guildData.reactRoles[reaction.message.id];
-        if (!messageData) return;
-        
-        if (reaction.emoji.name === messageData.emoji) {
-            const guild = reaction.message.guild;
-            const member = guild.members.cache.get(user.id);
-            const role = guild.roles.cache.get(messageData.roleId);
-            
-            if (member && role && !member.roles.cache.has(role.id)) {
-                member.roles.add(role).catch(console.error);
+
+        const reactRoleData = guildData.reactRoles[reaction.message.id];
+        if (!reactRoleData) return;
+
+        if (reaction.emoji.name !== reactRoleData.emoji) return;
+
+        try {
+            const member = await reaction.message.guild.members.fetch(user.id);
+            const role = await reaction.message.guild.roles.fetch(reactRoleData.roleId);
+
+            if (!role) {
+                console.error('Role tidak ditemukan!');
+                return;
             }
+
+            await member.roles.add(role);
+            console.log(`✅ Role ${role.name} diberikan ke ${user.tag}`);
+            
+            try {
+                await user.send(`✅ Kamu telah mendapatkan role **${role.name}** di server **${reaction.message.guild.name}**!`);
+            } catch (error) {
+                console.log(`Tidak bisa mengirim DM ke ${user.tag}`);
+            }
+
+        } catch (error) {
+            console.error('Error adding role:', error);
         }
     },
 };
