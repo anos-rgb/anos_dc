@@ -21,5 +21,12 @@
   "deleteLogChannel": null,
   "reactRoles": {},
   "welcomeMessage": null,
-  "goodbyeMessage": null
+  "goodbyeMessage": null,
+  "autoRoles": [
+    {
+      "roleId": "1429108692346998784",
+      "delay": "5 detik",
+      "delayMs": 5000
+    }
+  ]
 }
