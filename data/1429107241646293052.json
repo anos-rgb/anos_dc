@@ -9,7 +9,12 @@
   "allowedLinks": [],
   "gameRoles": [],
   "gameRoleChannel": null,
-  "randomRoles": [],
+  "randomRoles": [
+    {
+      "roleId": "1429108692346998784",
+      "channelId": "1429114971387727912"
+    }
+  ],
   "randomRoleMenus": [],
   "adminRole": null,
   "nameRequests": {},
