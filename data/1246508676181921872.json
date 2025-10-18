@@ -65,5 +65,11 @@
     "voiceChannelId": "1398597974229127229",
     "userChannels": {}
   },
-  "privateVC": {}
+  "privateVC": {},
+  "reactRoles": {
+    "1429203906814021775": {
+      "roleId": "1418452363529814179",
+      "emoji": "✅"
+    }
+  }
 }
