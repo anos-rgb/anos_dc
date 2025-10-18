@@ -1,5 +1,5 @@
 {
-  "welcomeChannel": null,
+  "welcomeChannel": "1429120878334971935",
   "welcomech": null,
   "goodbyeChannel": null,
   "goodbyech": null,
@@ -12,7 +12,7 @@
   "randomRoles": [
     {
       "roleId": "1429108692346998784",
-      "channelId": "1429114971387727912"
+      "channelId": "1429122277336944672"
     }
   ],
   "randomRoleMenus": [],
