@@ -48,7 +48,12 @@
     }
   ],
   "gameRoleChannel": "1351610336213733480",
-  "randomRoles": [],
+  "randomRoles": [
+    {
+      "roleId": "1418452363529814179",
+      "channelId": "1336337929311752224"
+    }
+  ],
   "randomRoleMenus": [],
   "adminRole": null,
   "nameRequests": {},
