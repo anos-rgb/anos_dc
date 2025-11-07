@@ -5,7 +5,7 @@
       "inventori": [],
       "statistik": {
         "game_dimainkan": 101,
-        "command_digunakan": 177,
+        "command_digunakan": 178,
         "kerja_terakhir": 0,
         "horeg_terakhir": 1752732671736,
         "kuis_dijawab": 8,
@@ -123,11 +123,11 @@
       }
     },
     "1343596142658584587": {
-      "saldo": 3088,
+      "saldo": 2935,
       "inventori": [],
       "statistik": {
-        "game_dimainkan": 30,
-        "command_digunakan": 108,
+        "game_dimainkan": 31,
+        "command_digunakan": 111,
         "kerja_terakhir": 1750307019556,
         "streaming_terakhir": 1750234919508,
         "nguli_terakhir": 1750235622139,
@@ -137,7 +137,8 @@
         "twitch_terakhir": 1752731632366,
         "twitch_subscribers": 4,
         "instagram_terakhir": 1754580652701,
-        "instagram_followers": 39
+        "instagram_followers": 39,
+        "horeg_terakhir": 1762519938879
       },
       "riwayat_beli": []
     },
@@ -283,7 +284,7 @@
     }
   ],
   "statistik_game": {
-    "penghasilan_harian": 58658,
+    "penghasilan_harian": 59022,
     "total_transaksi": 0,
     "tod_dimainkan": 2,
     "total_kemenangan": 14,
