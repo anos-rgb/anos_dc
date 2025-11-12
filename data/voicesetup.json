@@ -4,5 +4,18 @@
     "textChannelId": "1403061562562052128",
     "voiceChannelId": "1403061564902477907",
     "createdChannels": {}
+  },
+  "1429107241646293052": {
+    "categoryId": "1438029338833453056",
+    "textChannelId": "1438029340691533877",
+    "voiceChannelId": "1438029342914642040",
+    "createdChannels": {
+      "1246506845942579311": {
+        "channelId": "1438029455888224438",
+        "ownerId": "1246506845942579311",
+        "createdAt": 1762923339782,
+        "bannedUsers": []
+      }
+    }
   }
 }
