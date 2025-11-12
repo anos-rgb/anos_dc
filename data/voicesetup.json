@@ -9,13 +9,6 @@
     "categoryId": "1438029338833453056",
     "textChannelId": "1438029340691533877",
     "voiceChannelId": "1438029342914642040",
-    "createdChannels": {
-      "1246506845942579311": {
-        "channelId": "1438142923387437100",
-        "ownerId": "1246506845942579311",
-        "createdAt": 1762950392657,
-        "bannedUsers": []
-      }
-    }
+    "createdChannels": {}
   }
 }
