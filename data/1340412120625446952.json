@@ -5,7 +5,8 @@
   "registerRole": null,
   "antiLink": false,
   "allowedLinks": [
-    "media.discordapp.net/stickers"
+    "media.discordapp.net/stickers",
+    "media.discordapp.net"
   ],
   "gameRoles": [
     {
