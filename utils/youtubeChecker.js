@@ -24,10 +24,10 @@ class YouTubeNotifier {
         }
         if (!fs.existsSync(this.messagesPath)) {
             const defaultMessages = {
-                video: '📹 **{author}** baru upload video:\n**{title}**\n🔗 {url}',
-                short: '⚡ **{author}** baru upload short:\n**{title}**\n🔗 {url}',
-                live: '🔴 **{author}** sedang live:\n**{title}**\n🔗 {url}',
-                upcoming: '⏰ **{author}** akan live:\n**{title}**\n🔗 {url}'
+                video: '📹 **{author}** just uploaded a video:\n**{title}**\n🔗 {url}',
+                short: '⚡ **{author}** just uploaded a short:\n**{title}**\n🔗 {url}',
+                live: '🔴 **{author}** is live right now:\n**{title}**\n🔗 {url}',
+                upcoming: '⏰ **{author}** will go live:\n**{title}**\n🔗 {url}'
             };
             fs.writeFileSync(this.messagesPath, JSON.stringify(defaultMessages, null, 2));
         }
@@ -572,10 +572,10 @@ class YouTubeNotifier {
             return JSON.parse(fs.readFileSync(this.messagesPath, 'utf8'));
         } catch (error) {
             return {
-                video: '📹 **{author}** baru upload video:\n**{title}**\n🔗 {url}',
-                short: '⚡ **{author}** baru upload short:\n**{title}**\n🔗 {url}',
-                live: '🔴 **{author}** sedang live:\n**{title}**\n🔗 {url}',
-                upcoming: '⏰ **{author}** akan live:\n**{title}**\n🔗 {url}'
+                video: '📹 **{author}** just uploaded a video:\n**{title}**\n🔗 {url}',
+                short: '⚡ **{author}** just uploaded a short:\n**{title}**\n🔗 {url}',
+                live: '🔴 **{author}** is live right now:\n**{title}**\n🔗 {url}',
+                upcoming: '⏰ **{author}** will go live:\n**{title}**\n🔗 {url}'
             };
         }
     }
