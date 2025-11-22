@@ -1,7 +1,7 @@
 {
-  "name": "dc-bot-sia-nos",
+  "name": "ANOS BOT",
   "version": "1.0.0",
-  "description": "Discord bot dengan fitur canggih dan auto-backup ke GitHub",
+  "description": "Discord bot with auto-backup features to GitHub",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
