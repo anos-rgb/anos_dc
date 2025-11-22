@@ -1,114 +1,119 @@
 {
-  "timestamp": "2025-11-09T11:33:34.017Z",
-  "backupCount": 1,
-  "totalFiles": 19,
+  "timestamp": "2025-11-22T21:33:40.925Z",
+  "backupCount": 3084,
+  "totalFiles": 20,
   "serverInfo": {
-    "platform": "android",
-    "nodeVersion": "v24.9.0",
-    "uptime": 48.656892311,
+    "platform": "linux",
+    "nodeVersion": "v22.21.1",
+    "uptime": 369991.657848331,
     "memoryUsage": {
-      "rss": 70217728,
-      "heapTotal": 60735488,
-      "heapUsed": 31105096,
-      "external": 5794064,
-      "arrayBuffers": 2028842
+      "rss": 93229056,
+      "heapTotal": 45535232,
+      "heapUsed": 40121384,
+      "external": 6007128,
+      "arrayBuffers": 2211515
     }
   },
   "files": [
     {
       "path": "LICENSE",
       "size": 1890,
-      "modified": "2025-11-07T11:53:11.184Z"
+      "modified": "2025-11-17T11:11:16.352Z"
     },
     {
       "path": "README.md",
       "size": 8012,
-      "modified": "2025-11-07T11:53:11.188Z"
+      "modified": "2025-11-17T11:11:16.352Z"
     },
     {
       "path": "backup-manifest.json",
-      "size": 2639,
-      "modified": "2025-11-07T11:53:11.196Z"
+      "size": 2636,
+      "modified": "2025-11-17T11:11:16.352Z"
+    },
+    {
+      "path": "clone.js",
+      "size": 1093,
+      "modified": "2025-11-17T11:10:46.946Z"
     },
     {
       "path": "data/1162382486031061015.json",
       "size": 918,
-      "modified": "2025-11-07T11:53:11.424Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/1246508676181921872.json",
       "size": 1772,
-      "modified": "2025-11-07T11:53:11.424Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/1261408115182538822.json",
       "size": 425,
-      "modified": "2025-11-07T11:53:11.424Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/1340412116720418846.json",
       "size": 425,
-      "modified": "2025-11-07T11:53:11.424Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/1340412120625446952.json",
-      "size": 2327,
-      "modified": "2025-11-07T11:53:11.424Z"
+      "size": 2394,
+      "modified": "2025-11-22T12:20:33.405Z"
     },
     {
       "path": "data/1401549592474030080.json",
       "size": 425,
-      "modified": "2025-11-07T11:53:11.424Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/1429107241646293052.json",
       "size": 658,
-      "modified": "2025-11-07T11:53:11.424Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/anosae.json",
       "size": 22,
-      "modified": "2025-11-07T11:53:11.428Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/daily_messages.json",
       "size": 2,
-      "modified": "2025-11-07T16:00:25.719Z"
+      "modified": "2025-11-22T00:00:46.538Z"
     },
     {
       "path": "data/database.json",
       "size": 7436,
-      "modified": "2025-11-09T11:33:12.406Z"
+      "modified": "2025-11-21T19:42:54.545Z"
     },
     {
       "path": "data/inviteRoles_1246508676181921872.json",
       "size": 166,
-      "modified": "2025-11-07T11:53:11.428Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/serverstats.json",
       "size": 470,
-      "modified": "2025-11-07T11:53:11.428Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/voicesetup.json",
-      "size": 190,
-      "modified": "2025-11-07T11:53:11.428Z"
+      "size": 566,
+      "modified": "2025-11-22T08:24:24.878Z"
     },
     {
       "path": "data/warnings.json",
       "size": 233,
-      "modified": "2025-11-07T11:53:11.428Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/youtube_messages.json",
       "size": 262,
-      "modified": "2025-11-07T11:53:11.428Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     },
     {
       "path": "data/youtube_notifications.json",
       "size": 754,
-      "modified": "2025-11-07T11:53:11.432Z"
+      "modified": "2025-11-17T11:11:16.360Z"
     }
   ]
 }
