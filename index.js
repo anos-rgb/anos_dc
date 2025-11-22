@@ -134,7 +134,7 @@ class AutoBackupSystem {
                 }
             );
 
-            console.log(`✅ Backup berhasil: ${file.path}`);
+            console.log(`✅ Backup succes: ${file.path}`);
             return true;
         } catch (error) {
             console.error(`❌ Error backup ${file.path}:`, error.response?.data || error.message);
@@ -185,26 +185,26 @@ class AutoBackupSystem {
                     }
                 }
             );
-            console.log('✅ Backup manifest berhasil dibuat');
+            console.log('✅ Backup manifest succes created');
         } catch (error) {
-            console.error('❌ Error membuat backup manifest:', error.response?.data || error.message);
+            console.error('❌ Error creating backup manifest:', error.response?.data || error.message);
         }
     }
 
     async performBackup() {
         if (this.isRunning) {
-            console.log('🔄 Backup sedang berjalan, melewati backup cycle ini...');
+            console.log('🔄 Backup in progress, skipping this backup cycle...');
             return;
         }
 
         this.isRunning = true;
         this.backupCount++;
         
-        console.log(`🚀 Memulai backup otomatis #${this.backupCount} - ${new Date().toISOString()}`);
+        console.log(`🚀 Starting automatic backup #${this.backupCount} - ${new Date().toISOString()}`);
         
         try {
             const files = this.getFilesToBackup();
-            console.log(`📁 Ditemukan ${files.length} file untuk di-backup`);
+            console.log(`📁 Found ${files.length} files to backup`);
 
             let successCount = 0;
             let errorCount = 0;
@@ -232,7 +232,7 @@ class AutoBackupSystem {
     }
 
     startBackup() {
-        console.log('🔧 Auto backup system diaktifkan - backup setiap 2 menit');
+        console.log('🔧 Automation backup system on - backup every 2 minute');
         
         setTimeout(() => {
             this.performBackup();
@@ -420,9 +420,9 @@ function loadCommands(dir) {
                 
                 if ('name' in command && 'execute' in command) {
                     client.commands.set(command.name, command);
-                    console.log(`✅ Command ${command.name} berhasil dimuat!`);
+                    console.log(`✅ Command ${command.name} Successfully loaded.!`);
                 } else {
-                    console.log(`❌ Command di ${filePath} ga valid!`);
+                    console.log(`❌ Command in ${filePath} not valid!`);
                 }
             }
         }
@@ -437,7 +437,7 @@ for (const file of commandFiles) {
             client.commands.set(command.name, command);
             console.log(`Loaded command: ${command.name}`);
         } else {
-            console.warn(`Command file ${file} tidak memiliki nama command`);
+            console.warn(`Command file ${file} don't have command name`);
         }
     } catch (error) {
         console.error(`Error loading command ${file}:`, error);
@@ -460,11 +460,11 @@ for (const file of eventFiles) {
 }
 
 client.once('ready', async () => {
-    console.log(`Bot online sebagai ${client.user.tag}!`);
+    console.log(`Bot online in: ${client.user.tag}!`);
     console.log(`Bot ID: ${client.user.id}`);
-    console.log(`Terhubung ke ${client.guilds.cache.size} server(s)`);
+    console.log(`“Connected to ${client.guilds.cache.size} server(s)`);
     console.log(`Prefix: ${prefix}`);
-    console.log(`🔄 Auto backup system aktif - backup setiap 2 menit ke GitHub`);
+    console.log(`🔄 Automation backup system on - backup every 2 minute to GitHub`);
     loadCommands(path.join(__dirname, 'commands'));
     client.database = client.db.load();
     
@@ -475,7 +475,7 @@ client.once('ready', async () => {
 });
 
 client.on('guildCreate', async (guild) => {
-    console.log(`Bot bergabung ke server baru: ${guild.name}`);
+    console.log(`Bot join to new server: ${guild.name}`);
     await updateInviteCache(guild);
 });
 
@@ -519,7 +519,7 @@ client.on('messageCreate', async (message) => {
             
             return message.reply({ embeds: [embed] });
         } catch (error) {
-            return message.reply('❌ Error mengambil status backup!');
+            return message.reply('❌ Error geting backup status!');
         }
     }
 
@@ -551,8 +551,8 @@ client.on('messageCreate', async (message) => {
     if (!client.database.users[message.author.id] && commandName !== 'register') {
         const embed = new EmbedBuilder()
             .setColor('#FF5555')
-            .setTitle('❌ Belom register Cuy!')
-            .setDescription(`Lo belom terdaftar, ketik \`${prefix}register\` dulu buat mulai!`)
+            .setTitle('❌ Not registered yet bro!')
+            .setDescription(`you're not registered, type \`${prefix}register\` first to start!`)
             .setFooter({ text: 'EkonomiBot Kece' });
             
         return message.reply({ embeds: [embed] });
@@ -564,7 +564,7 @@ client.on('messageCreate', async (message) => {
     } catch (error) {
         console.error(`Error executing command ${commandName}:`, error);
         try {
-            await message.reply('Terjadi error saat menjalankan command!');
+            await message.reply('An error occurred while running the command!');
         } catch (replyError) {
             console.error('Error sending error message:', replyError);
         }
@@ -599,7 +599,7 @@ async function handleNameChangeRequest(interaction, client) {
     
     if (!guildData.nameRequests || !guildData.nameRequests[requestId]) {
         return interaction.reply({ 
-            content: '❌ Permintaan tidak ditemukan atau sudah diproses!', 
+            content: '❌ Request not found or already processed!', 
             flags: MessageFlags.Ephemeral 
         });
     }
@@ -608,7 +608,7 @@ async function handleNameChangeRequest(interaction, client) {
     
     if (request.status !== 'pending') {
         return interaction.reply({ 
-            content: '❌ Permintaan sudah diproses sebelumnya!', 
+            content: '❌ Request has already been processed before!', 
             flags: MessageFlags.Ephemeral 
         });
     }
@@ -623,38 +623,37 @@ async function handleNameChangeRequest(interaction, client) {
             }
 
             const acceptEmbed = {
-                title: '✅ Permintaan Ganti Nama Diterima',
-                description: `udah gw aceceh tu njing .\n\n**Nama Baru:** ${request.requestedName}`,
-                color: 0x00ff00,
-                footer: {
-                    text: 'Nama kamu telah berhasil diubah'
-                },
-                timestamp: new Date()
+              title: '✅ Name Change Request Accepted',
+              description: `done bro, udh gue approve.\n\n**New Name:** ${request.requestedName}`,
+              color: 0x00ff00,
+              footer: { text: 'Your name has been successfully updated' },
+              timestamp: new Date()
             };
+
 
             await targetUser.send({ embeds: [acceptEmbed] });
             request.status = 'accepted';
-            await interaction.reply({ content: `✅ Permintaan diterima! Nama **${targetUser.tag}** berhasil diubah ke **${request.requestedName}**`, flags: MessageFlags.Ephemeral });
+            await interaction.reply({ content: `✅ Request accept! Name **${targetUser.tag}** succes changed to **${request.requestedName}**`, flags: MessageFlags.Ephemeral });
         } else {
             const rejectEmbed = {
-                title: '❌ Permintaan Ganti Nama Ditolak',
-                description: `mau ganti nama jadi **${request.requestedName}** ya?.\n\nganti ajah sendiri anje**😂.`,
+                title: '❌ Name Change Request rejected',
+                description: `admin not accept your reuest name to **${request.requestedName}**.`,
                 color: 0xff0000,
                 footer: {
-                    text: 'Kamu bisa mengajukan permintaan baru dengan nama yang berbeda'
+                    text: You can submit a new request with a different name.
                 },
                 timestamp: new Date()
             };
 
             await targetUser.send({ embeds: [rejectEmbed] });
             request.status = 'rejected';
-            await interaction.reply({ content: `❌ Permintaan ditolak! **${targetUser.tag}** telah diberi tahu.`, flags: MessageFlags.Ephemeral });
+            await interaction.reply({ content: `❌ Request rejected! **${targetUser.tag}** has been notified.`, flags: MessageFlags.Ephemeral });
         }
 
         client.saveGuildData(guild.id, guildData);
     } catch (error) {
         console.error('Error processing name request:', error);
-        await interaction.reply({ content: '❌ Terjadi error saat memproses permintaan!', flags: MessageFlags.Ephemeral });
+        await interaction.reply({ content: '❌ An error occurred while processing the request!', flags: MessageFlags.Ephemeral });
     }
 }
 
@@ -663,7 +662,7 @@ async function handleRandomRole(interaction, client) {
     
     if (!guildData.randomRoles || guildData.randomRoles.length === 0) {
         return interaction.reply({ 
-            content: '❌ Tidak ada random role yang tersedia!', 
+            content: '❌ No random roles available!', 
             flags: MessageFlags.Ephemeral 
         });
     }
@@ -675,7 +674,7 @@ async function handleRandomRole(interaction, client) {
 
     if (availableRoles.length === 0) {
         return interaction.reply({ 
-            content: '❌ Kamu sudah memiliki semua role yang tersedia!', 
+            content: '❌ You already have all available roles!', 
             flags: MessageFlags.Ephemeral 
         });
     }
@@ -687,11 +686,11 @@ async function handleRandomRole(interaction, client) {
         await interaction.member.roles.add(randomRole);
         
         const embed = {
-            title: '🎲 Random Role Berhasil!',
-            description: `Kamu mendapatkan role **${randomRole.name}**!`,
+            title: '🎲 Random Role Succes!',
+            description: `you got role **${randomRole.name}**!`,
             color: randomRole.color || 0x00ff00,
             footer: {
-                text: 'Selamat menikmati role baru kamu!'
+                text: 'Enjoy your new role!'
             },
             timestamp: new Date()
         };
@@ -700,7 +699,7 @@ async function handleRandomRole(interaction, client) {
     } catch (error) {
         console.error('Error giving random role:', error);
         await interaction.reply({ 
-            content: '❌ Terjadi error saat memberikan role!', 
+            content: '❌ Error giving random role!', 
             flags: MessageFlags.Ephemeral 
         });
     }
@@ -718,7 +717,7 @@ client.on('interactionCreate', async interaction => {
 
             if (!interaction.guild) {
                 return interaction.reply({ 
-                    content: 'Command ini hanya bisa digunakan di server!', 
+                    content: 'This Command can only be used in a server!', 
                     flags: MessageFlags.Ephemeral 
                 });
             }
@@ -733,16 +732,16 @@ client.on('interactionCreate', async interaction => {
                 const role = interaction.guild.roles.cache.get(roleId);
                 
                 if (!role) {
-                    return interaction.reply({ content: 'Role tidak ditemukan!', flags: MessageFlags.Ephemeral });
+                    return interaction.reply({ content: 'Role not found!', flags: MessageFlags.Ephemeral });
                 }
 
                 const member = interaction.member;
                 if (member.roles.cache.has(roleId)) {
                     await member.roles.remove(roleId);
-                    await interaction.reply({ content: `Role **${role.name}** telah dihapus!`, flags: MessageFlags.Ephemeral });
+                    await interaction.reply({ content: `Role **${role.name}** has been deleted!`, flags: MessageFlags.Ephemeral });
                 } else {
                     await member.roles.add(roleId);
-                    await interaction.reply({ content: `Role **${role.name}** telah ditambahkan!`, flags: MessageFlags.Ephemeral });
+                    await interaction.reply({ content: `Role **${role.name}** has been added!`, flags: MessageFlags.Ephemeral });
                 }
             }
         }
@@ -750,7 +749,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.isStringSelectMenu()) {
             if (!interaction.guild) {
                 return interaction.reply({ 
-                    content: 'Command ini hanya bisa digunakan di server!', 
+                    content: 'This command can only used in a server!', 
                     flags: MessageFlags.Ephemeral 
                 });
             }
@@ -760,16 +759,16 @@ client.on('interactionCreate', async interaction => {
                 const role = interaction.guild.roles.cache.get(roleId);
                 
                 if (!role) {
-                    return interaction.reply({ content: 'Role tidak ditemukan!', flags: MessageFlags.Ephemeral });
+                    return interaction.reply({ content: 'Role not found!', flags: MessageFlags.Ephemeral });
                 }
 
                 const member = interaction.member;
                 if (member.roles.cache.has(roleId)) {
                     await member.roles.remove(roleId);
-                    await interaction.reply({ content: `Role **${role.name}** telah dihapus!`, flags: MessageFlags.Ephemeral });
+                    await interaction.reply({ content: `Role **${role.name}** has been deleted!`, flags: MessageFlags.Ephemeral });
                 } else {
                     await member.roles.add(roleId);
-                    await interaction.reply({ content: `Role **${role.name}** telah ditambahkan!`, flags: MessageFlags.Ephemeral });
+                    await interaction.reply({ content: `Role **${role.name}** has been added!`, flags: MessageFlags.Ephemeral });
                 }
             }
 
@@ -783,16 +782,16 @@ client.on('interactionCreate', async interaction => {
                     const role = interaction.guild.roles.cache.get(roleId);
                     
                     if (!role) {
-                        return interaction.reply({ content: 'Role tidak ditemukan!', flags: MessageFlags.Ephemeral });
+                        return interaction.reply({ content: 'Role not found!', flags: MessageFlags.Ephemeral });
                     }
 
                     const member = interaction.member;
                     if (member.roles.cache.has(roleId)) {
                         await member.roles.remove(roleId);
-                        await interaction.reply({ content: `Role **${role.name}** telah dihapus!`, flags: MessageFlags.Ephemeral });
+                        await interaction.reply({ content: `Role **${role.name}** has been deleted!`, flags: MessageFlags.Ephemeral });
                     } else {
                         await member.roles.add(roleId);
-                        await interaction.reply({ content: `Role **${role.name}** telah ditambahkan!`, flags: MessageFlags.Ephemeral });
+                        await interaction.reply({ content: `Role **${role.name}** has been added!`, flags: MessageFlags.Ephemeral });
                     }
                 }
             }
@@ -800,7 +799,7 @@ client.on('interactionCreate', async interaction => {
     } catch (error) {
         console.error('Error handling interaction:', error);
         const replyOptions = { 
-            content: 'Terjadi error saat memproses permintaan!', 
+            content: 'An error occurred while processing the request!', 
             flags: MessageFlags.Ephemeral 
         };
         
@@ -822,8 +821,8 @@ setInterval(() => {
                 
                 if (role && channel) {
                     const embed = {
-                        title: '🎮 Reminder Registrasi!',
-                        description: `Jangan lupa untuk registrasi dengan mengetik:\n\`\`\`reg [nama kamu]\`\`\`\nDi channel ${channel}`,
+                        title: '🎮 Registration Reminder!',
+                        description: Don’t forget to register by typing:\n\`\`\`reg [your name]\`\`\`\nin channel ${channel}`,
                         color: 0x00ff00,
                         timestamp: new Date()
                     };
@@ -855,6 +854,6 @@ process.on('uncaughtException', (error) => {
 client.login(config.token).catch(error => {
     console.error('Error saat login:', error);
     if (error.code === 'TokenInvalid') {
-        console.error('Token tidak valid! Periksa kembali token di config.json');
+        console.error('Token not valid! check token in config.json');
     }
 });
