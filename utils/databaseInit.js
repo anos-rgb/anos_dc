@@ -6,13 +6,13 @@ function initializeDatabase() {
   
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
-    console.log('Folder data dibuat');
+    console.log('data folder created');
   }
   
   const statsDataPath = path.join(dataDir, 'serverstats.json');
   if (!fs.existsSync(statsDataPath)) {
     fs.writeFileSync(statsDataPath, JSON.stringify({}, null, 2));
-    console.log('File serverstats.json dibuat');
+    console.log('File serverstats.json created');
   }
 }
 
