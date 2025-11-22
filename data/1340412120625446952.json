@@ -4,7 +4,9 @@
   "registerChannel": null,
   "registerRole": null,
   "antiLink": true,
-  "allowedLinks": [],
+  "allowedLinks": [
+    "media.discordapp.net/stickers"
+  ],
   "gameRoles": [
     {
       "id": "1387458765259018290",
