@@ -3,7 +3,7 @@
   "goodbyeChannel": "1387374079975096431",
   "registerChannel": null,
   "registerRole": null,
-  "antiLink": false,
+  "antiLink": true,
   "allowedLinks": [
     "media.discordapp.net/stickers",
     "media.discordapp.net"
