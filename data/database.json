@@ -1,11 +1,11 @@
 {
   "users": {
     "1246506845942579311": {
-      "saldo": 77342650177318020,
+      "saldo": 77342650177318200,
       "inventori": [],
       "statistik": {
-        "game_dimainkan": 101,
-        "command_digunakan": 181,
+        "game_dimainkan": 102,
+        "command_digunakan": 183,
         "kerja_terakhir": 0,
         "horeg_terakhir": 1752732671736,
         "kuis_dijawab": 8,
