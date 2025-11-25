@@ -3,7 +3,14 @@
     "categoryId": "1403061558938173575",
     "textChannelId": "1403061562562052128",
     "voiceChannelId": "1403061564902477907",
-    "createdChannels": {}
+    "createdChannels": {
+      "1377576343184871456": {
+        "channelId": "1442863865821134900",
+        "ownerId": "1377576343184871456",
+        "createdAt": 1764075953054,
+        "bannedUsers": []
+      }
+    }
   },
   "1429107241646293052": {
     "categoryId": "1438029338833453056",
@@ -15,13 +22,6 @@
     "categoryId": "1439257349448667207",
     "textChannelId": "1439257351789084807",
     "voiceChannelId": "1439257354234236948",
-    "createdChannels": {
-      "1246506845942579311": {
-        "channelId": "1442852913281241248",
-        "ownerId": "1246506845942579311",
-        "createdAt": 1764073341640,
-        "bannedUsers": []
-      }
-    }
+    "createdChannels": {}
   }
 }
