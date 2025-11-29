@@ -1,119 +1,124 @@
 {
-  "timestamp": "2025-11-29T11:08:39.426Z",
-  "backupCount": 203,
-  "totalFiles": 20,
+  "timestamp": "2025-11-27T15:17:12.293Z",
+  "backupCount": 9,
+  "totalFiles": 21,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v22.21.1",
-    "uptime": 24265.512742006,
+    "uptime": 976.133913493,
     "memoryUsage": {
-      "rss": 115888128,
-      "heapTotal": 40574976,
-      "heapUsed": 35750192,
-      "external": 10104274,
-      "arrayBuffers": 7782181
+      "rss": 112926720,
+      "heapTotal": 39804928,
+      "heapUsed": 31957688,
+      "external": 5197144,
+      "arrayBuffers": 1409177
     }
   },
   "files": [
     {
       "path": "LICENSE",
       "size": 1890,
-      "modified": "2025-11-29T03:28:15.876Z"
+      "modified": "2025-11-27T14:49:34.796Z"
     },
     {
       "path": "README.md",
       "size": 8012,
-      "modified": "2025-11-29T03:28:15.876Z"
+      "modified": "2025-11-27T14:49:34.796Z"
     },
     {
       "path": "backup-manifest.json",
-      "size": 2846,
-      "modified": "2025-11-29T03:28:15.876Z"
+      "size": 2636,
+      "modified": "2025-11-27T14:49:34.800Z"
     },
     {
       "path": "clone.js",
       "size": 1132,
-      "modified": "2025-11-29T03:27:09.087Z"
+      "modified": "2025-11-27T14:49:01.664Z"
     },
     {
       "path": "data/1162382486031061015.json",
       "size": 918,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/1246508676181921872.json",
       "size": 1772,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/1261408115182538822.json",
       "size": 425,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/1340412116720418846.json",
       "size": 425,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/1340412120625446952.json",
       "size": 2393,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/1401549592474030080.json",
       "size": 425,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/1429107241646293052.json",
       "size": 658,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/anosae.json",
       "size": 22,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/daily_messages.json",
       "size": 2,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/database.json",
       "size": 7436,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/inviteRoles_1246508676181921872.json",
       "size": 166,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/serverstats.json",
       "size": 470,
-      "modified": "2025-11-29T03:28:15.884Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/voicesetup.json",
-      "size": 756,
-      "modified": "2025-11-29T11:04:50.289Z"
+      "size": 566,
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/warnings.json",
       "size": 233,
-      "modified": "2025-11-29T03:28:15.888Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/youtube_messages.json",
       "size": 262,
-      "modified": "2025-11-29T03:28:15.888Z"
+      "modified": "2025-11-27T14:49:34.816Z"
     },
     {
       "path": "data/youtube_notifications.json",
       "size": 754,
-      "modified": "2025-11-29T03:28:15.888Z"
+      "modified": "2025-11-27T14:49:34.816Z"
+    },
+    {
+      "path": "index.js",
+      "size": 31339,
+      "modified": "2025-11-27T15:00:54.458Z"
     }
   ]
 }
