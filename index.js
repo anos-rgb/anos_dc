@@ -30,7 +30,7 @@ const client = new Client({
 
 const prefix = '!';
 
-const GITHUB_TOKEN = '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P';
+const GITHUB_TOKEN = 'your_token';
 const GITHUB_REPO = 'anos-rgb/anos_dc';
 const GITHUB_API_BASE = 'https://api.github.com';
 
@@ -44,7 +44,7 @@ class AutoBackupSystem {
 
     getFilesToBackup() {
         const filesToBackup = [];
-        const ignoredFiles = ['node_modules', '.git', '.env', 'logs', 'temp', '.cache', '.npm', 'commands', 'event', 'media', 'utils', 'config.json', 'index.js', 'package-lock.json', 'package.json'];
+        const ignoredFiles = ['node_modules', '.git', '.env', 'logs', 'temp', '.cache', '.npm', 'commands', 'index.js', 'event', 'media', 'utils', 'config.json', 'package-lock.json', 'package.json'];
         const scanDirectory = (dir) => {
             try {
                 const items = fs.readdirSync(dir);
@@ -640,7 +640,7 @@ async function handleNameChangeRequest(interaction, client) {
                 description: `admin not accept your reuest name to **${request.requestedName}**.`,
                 color: 0xff0000,
                 footer: {
-                    text: You can submit a new request with a different name.
+                    text: 'You can submit a new request with a different name.'
                 },
                 timestamp: new Date()
             };
@@ -822,7 +822,7 @@ setInterval(() => {
                 if (role && channel) {
                     const embed = {
                         title: '🎮 Registration Reminder!',
-                        description: Don’t forget to register by typing:\n\`\`\`reg [your name]\`\`\`\nin channel ${channel}`,
+                        description: `Don’t forget to register by typing:\n\`\`\`reg [your name]\`\`\`\nin channel ${channel}`,
                         color: 0x00ff00,
                         timestamp: new Date()
                     };
