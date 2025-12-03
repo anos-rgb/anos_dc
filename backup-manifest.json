@@ -1,119 +1,119 @@
 {
-  "timestamp": "2025-12-02T12:40:07.609Z",
-  "backupCount": 187,
+  "timestamp": "2025-12-03T20:23:55.121Z",
+  "backupCount": 143,
   "totalFiles": 20,
   "serverInfo": {
     "platform": "linux",
     "nodeVersion": "v22.21.1",
-    "uptime": 22344.802134853,
+    "uptime": 42624.508862462,
     "memoryUsage": {
-      "rss": 137740288,
-      "heapTotal": 42688512,
-      "heapUsed": 34014240,
-      "external": 5001721,
-      "arrayBuffers": 1206108
+      "rss": 135180288,
+      "heapTotal": 40624128,
+      "heapUsed": 35480016,
+      "external": 5109380,
+      "arrayBuffers": 1313767
     }
   },
   "files": [
     {
       "path": "LICENSE",
       "size": 1890,
-      "modified": "2025-12-02T06:24:30.083Z"
+      "modified": "2025-12-03T08:27:42.670Z"
     },
     {
       "path": "README.md",
       "size": 8012,
-      "modified": "2025-12-02T06:24:30.083Z"
+      "modified": "2025-12-03T08:27:42.670Z"
     },
     {
       "path": "backup-manifest.json",
       "size": 2745,
-      "modified": "2025-12-02T06:24:30.083Z"
+      "modified": "2025-12-03T08:27:42.670Z"
     },
     {
       "path": "clone.js",
       "size": 1132,
-      "modified": "2025-12-02T06:24:02.301Z"
+      "modified": "2025-12-03T08:27:11.982Z"
     },
     {
       "path": "data/1162382486031061015.json",
       "size": 918,
-      "modified": "2025-12-02T06:24:30.095Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/1246508676181921872.json",
       "size": 1772,
-      "modified": "2025-12-02T06:24:30.095Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/1261408115182538822.json",
       "size": 425,
-      "modified": "2025-12-02T06:24:30.095Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/1340412116720418846.json",
       "size": 425,
-      "modified": "2025-12-02T06:24:30.095Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/1340412120625446952.json",
       "size": 2393,
-      "modified": "2025-12-02T06:24:30.095Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/1401549592474030080.json",
       "size": 425,
-      "modified": "2025-12-02T06:24:30.095Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/1429107241646293052.json",
       "size": 658,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/anosae.json",
       "size": 22,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/daily_messages.json",
       "size": 2,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/database.json",
       "size": 7436,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T16:29:39.939Z"
     },
     {
       "path": "data/inviteRoles_1246508676181921872.json",
       "size": 166,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/serverstats.json",
       "size": 470,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/voicesetup.json",
       "size": 756,
-      "modified": "2025-12-02T09:45:21.017Z"
+      "modified": "2025-12-03T18:47:32.103Z"
     },
     {
       "path": "data/warnings.json",
       "size": 233,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/youtube_messages.json",
       "size": 262,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     },
     {
       "path": "data/youtube_notifications.json",
       "size": 754,
-      "modified": "2025-12-02T06:24:30.099Z"
+      "modified": "2025-12-03T08:27:42.682Z"
     }
   ]
 }
