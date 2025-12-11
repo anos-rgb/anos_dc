@@ -1,13 +1,13 @@
 {
   "users": {
     "1246506845942579311": {
-      "saldo": 77342650177318350,
+      "saldo": 77342650177819300,
       "inventori": [],
       "statistik": {
-        "game_dimainkan": 103,
-        "command_digunakan": 188,
-        "kerja_terakhir": 0,
-        "horeg_terakhir": 1752732671736,
+        "game_dimainkan": 104,
+        "command_digunakan": 191,
+        "kerja_terakhir": 1765450955267,
+        "horeg_terakhir": 1765450963133,
         "kuis_dijawab": 8,
         "kuis_salah": 2,
         "kuis_benar": 6
@@ -284,7 +284,7 @@
     }
   ],
   "statistik_game": {
-    "penghasilan_harian": 59022,
+    "penghasilan_harian": 59958,
     "total_transaksi": 0,
     "tod_dimainkan": 2,
     "total_kemenangan": 14,
