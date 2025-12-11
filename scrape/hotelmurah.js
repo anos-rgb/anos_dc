@@ -1,17 +1,30 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { wrapper } = require('axios-cookiejar-support');
+const { CookieJar } = require('tough-cookie');
 
 class HotelMurahScraper {
     constructor() {
         this.baseUrl = 'https://www.hotelmurah.com/pulsa';
-        this.session = axios.create({
+        const jar = new CookieJar();
+        
+        this.session = wrapper(axios.create({
+            jar,
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml',
-                'Accept-Language': 'id-ID,id;q=0.9',
-                'Referer': 'https://www.hotelmurah.com/'
-            }
-        });
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Cache-Control': 'max-age=0'
+            },
+            timeout: 30000,
+            maxRedirects: 5
+        }));
     }
 
     getDefaultProducts() {
@@ -29,8 +42,19 @@ class HotelMurahScraper {
         ];
     }
 
+    async bypassCloudflare() {
+        try {
+            await this.session.get(this.baseUrl);
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
     async getDanaProducts() {
         try {
+            await this.bypassCloudflare();
             const response = await this.session.get(`${this.baseUrl}/top-up-dana`);
             const $ = cheerio.load(response.data);
             const products = [];
@@ -67,12 +91,14 @@ class HotelMurahScraper {
                 return { success: false, error: 'Nominal tidak valid' };
             }
 
-            // Step 1: Submit order
             const orderData = new URLSearchParams({
                 phone_number: phoneNumber,
                 product_id: product.id,
                 nominal: amount
             });
+
+            this.session.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            this.session.defaults.headers['Referer'] = `${this.baseUrl}/top-up-dana`;
 
             const orderResponse = await this.session.post(
                 `${this.baseUrl}/Ewallet/detailOrder`,
@@ -80,9 +106,9 @@ class HotelMurahScraper {
             );
 
             let $ = cheerio.load(orderResponse.data);
-            const totalHarga = $('#total_harga').text().trim();
 
-            // Step 2: Lanjutkan pembayaran
+            this.session.defaults.headers['Referer'] = `${this.baseUrl}/Ewallet/detailOrder`;
+            
             const paymentResponse = await this.session.post(
                 `${this.baseUrl}/ewallet/finishxendit`,
                 new URLSearchParams({ payment_method: 'qris' })
@@ -90,7 +116,6 @@ class HotelMurahScraper {
 
             $ = cheerio.load(paymentResponse.data);
 
-            // Extract data pembayaran
             const qrCodeUrl = $('.img-qris, img.bank-icon').attr('src');
             const orderNumber = $('td:contains("No. Order")').next().find('b').text().trim();
             const rrn = $('td:contains("RRN")').next().find('b').text().trim();
