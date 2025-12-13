@@ -91,5 +91,7 @@
     "textChannelId": "1397434843834351617",
     "voiceChannelId": "1397434845550084097",
     "userChannels": {}
-  }
+  },
+  "antiPromo": true,
+  "antiPromoSensitivity": 3
 }
